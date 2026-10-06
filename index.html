@@ -26,10 +26,7 @@
     }
     h1 { color: #1e3a8a; font-size: 1.7rem; margin: 0 0 6px 0; }
     p.sub { color: #64748b; font-size: 0.95rem; margin-bottom: 22px; }
-    
     .list-topics { display: flex; flex-direction: column; gap: 14px; }
-    
-    /* Thẻ liên kết chuyển trang */
     .topic-link {
       display: flex;
       align-items: center;
@@ -43,8 +40,7 @@
       transition: all 0.15s;
     }
     .topic-link:active { transform: scale(0.98); background: #eff6ff; }
-    .topic-link.active-link { border-color: #3b82f6; }
-    .icon { font-size: 2.2rem; }
+    .icon { font-size: 2.2rem; min-width: 45px; text-align: center; }
     .info { text-align: left; }
     .info h3 { margin: 0 0 4px 0; color: #0f172a; font-size: 1.05rem; }
     .info p { margin: 0 0 6px 0; font-size: 0.85rem; color: #64748b; }
@@ -57,7 +53,6 @@
       background: #dbeafe;
       color: #1d4ed8;
     }
-    .locked { opacity: 0.55; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -67,24 +62,35 @@
   <p class="sub">Bé hãy chọn chủ đề để bắt đầu nhé!</p>
 
   <div class="list-topics">
-    <!-- Bấm vào đây sẽ mở trực tiếp trang chude1.html -->
-    <a href="chude1.html" class="topic-link active-link">
+    <!-- Chủ đề 1 -->
+    <a href="chude1.html" class="topic-link">
       <div class="icon">🎯</div>
       <div class="info">
-        <h3>Chủ đề 1: Cộng, Trừ trong phạm vi 20</h3>
-        <p>Luyện tập 20 câu ngẫu nhiên không trùng lặp.</p>
-        <span class="badge">Đang mở • Tự động sinh đề</span>
+        <h3>Chủ đề 1: Phép Cộng & Trừ phạm vi 20</h3>
+        <p>Luyện tập 20 câu ngẫu nhiên phản xạ nhanh.</p>
+        <span class="badge">20 câu • Ngẫu nhiên</span>
       </div>
     </a>
 
-    <div class="topic-link locked">
-      <div class="icon">✖️️</div>
+    <!-- Chủ đề 2 -->
+    <a href="chude2.html" class="topic-link">
+      <div class="icon">✖️</div>
       <div class="info">
-        <h3>Chủ đề 2: Bảng nhân 2 đến 9</h3>
-        <p>Sẽ thêm trang chude2.html tiếp theo.</p>
-        <span class="badge" style="background: #f1f5f9; color: #94a3b8;">Chưa mở</span>
+        <h3>Chủ đề 2: Bảng Nhân (từ 2 đến 9)</h3>
+        <p>Học và ôn luyện các bảng cửu chương nhân.</p>
+        <span class="badge">20 câu • Ngẫu nhiên</span>
       </div>
-    </div>
+    </a>
+
+    <!-- Chủ đề 3 -->
+    <a href="chude3.html" class="topic-link">
+      <div class="icon">➗</div>
+      <div class="info">
+        <h3>Chủ đề 3: Bảng Chia (từ 2 đến 9)</h3>
+        <p>Rèn luyện phép chia hết cơ bản lớp 3.</p>
+        <span class="badge">20 câu • Ngẫu nhiên</span>
+      </div>
+    </a>
   </div>
 </div>
 

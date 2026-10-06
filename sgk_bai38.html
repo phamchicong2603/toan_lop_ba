@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SGK Bài 38: Biểu thức số & Tính giá trị biểu thức</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #fbcfe8 0%, #f472b6 100%);
+      min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 12px;
+    }
+    .game-card {
+      background: white; border-radius: 24px; box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%; max-width: 480px; padding: 22px 18px; text-align: center;
+    }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .btn-back {
+      background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 6px 12px; font-size: 0.88rem; font-weight: bold; color: #475569; text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    .progress-track { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+    .progress-bar { height: 100%; width: 0%; background: #db2777; transition: width 0.25s ease; }
+    .question-box {
+      background: #fdf2f8; border: 2px dashed #db2777; border-radius: 18px;
+      padding: 18px 14px; margin-bottom: 14px; text-align: left;
+    }
+    .q-type { font-size: 0.85rem; font-weight: 800; color: #be185d; margin-bottom: 6px; }
+    .q-content { font-size: 1.15rem; line-height: 1.5; font-weight: 700; color: #1e293b; margin: 0; }
+    .hint-box {
+      min-height: 48px; font-size: 0.9rem; color: #9d174d; background: #fce7f3;
+      border-radius: 12px; padding: 8px 12px; margin-bottom: 16px; display: flex;
+      align-items: center; justify-content: center; text-align: left;
+    }
+    .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+    .btn-opt {
+      background: #db2777; color: white; border: none; border-radius: 14px;
+      padding: 16px 8px; font-size: 1.15rem; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 0 #be185d; transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #be185d; }
+    .btn-opt.correct { background: #16a34a !important; box-shadow: 0 4px 0 #15803d !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <div id="quiz-section">
+    <div class="header-bar">
+      <a href="sgk_chude6.html" class="btn-back">⬅ Chọn bài khác</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track"><div class="progress-bar" id="bar-progress"></div></div>
+
+    <div class="question-box">
+      <div class="q-type" id="lbl-qtype">DẠNG TOÁN SGK</div>
+      <p class="q-content" id="lbl-qcontent"></p>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy nhớ: Trong ngoặc trước, nhân chia trước - cộng trừ sau nhé!</div>
+    <div class="answers-grid" id="grid-answers"></div>
+  </div>
+
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="sgk_chude6.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Chọn bài</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function generateLesson38Questions(total = 20) {
+    const list = [];
+    for (let i = 0; i < total; i++) {
+      const type = i % 4;
+      let qType, content, correct, hint;
+      const wrongs = new Set();
+
+      if (type === 0) {
+        // Chỉ có phép cộng trừ hoặc nhân chia (tính từ trái sang phải)
+        const a = Math.floor(Math.random() * 20) + 30;
+        const b = Math.floor(Math.random() * 15) + 10;
+        const c = Math.floor(Math.random() * 10) + 5;
+        const res = a - b + c;
+        qType = "DẠNG 1: TÍNH TỪ TRÁI SANG PHẢI";
+        content = `Tính giá trị của biểu thức: ${a} - ${b} + ${c} = ?`;
+        correct = `${res}`;
+        hint = `Biểu thức chỉ có cộng trừ thì thực hiện từ trái sang phải: ${a} - ${b} = ${a - b}; ${a - b} + ${c} = ${res}.`;
+        wrongs.add(`${a - (b + c)}`); wrongs.add(`${res + 10}`); wrongs.add(`${res - 5}`);
+      }
+      else if (type === 1) {
+        // Có cả nhân chia và cộng trừ (nhân chia trước, cộng trừ sau)
+        const a = Math.floor(Math.random() * 20) + 20;
+        const b = Math.floor(Math.random() * 5) + 3;
+        const c = Math.floor(Math.random() * 6) + 4;
+        const res = a + b * c;
+        qType = "DẠNG 2: NHÂN CHIA TRƯỚC, CỘNG TRỪ SAU";
+        content = `Tính giá trị của biểu thức: ${a} + ${b} × ${c} = ?`;
+        correct = `${res}`;
+        hint = `Thực hiện phép nhân trước: ${b} × ${c} = ${b * c}, rồi cộng: ${a} + ${b * c} = ${res}.`;
+        wrongs.add(`${(a + b) * c}`); wrongs.add(`${res + 10}`); wrongs.add(`${res - 10}`);
+      }
+      else if (type === 2) {
+        // Biểu thức có dấu ngoặc (trong ngoặc trước)
+        const a = Math.floor(Math.random() * 5) + 2;
+        const b = Math.floor(Math.random() * 10) + 15;
+        const c = Math.floor(Math.random() * 8) + 5;
+        const res = a * (b - c);
+        qType = "DẠNG 3: BIỂU THỨC CÓ DẤU NGOẶC";
+        content = `Tính giá trị của biểu thức: ${a} × (${b} - ${c}) = ?`;
+        correct = `${res}`;
+        hint = `Tính trong ngoặc trước: ${b} - ${c} = ${b - c}, sau đó nhân: ${a} × ${b - c} = ${res}.`;
+        wrongs.add(`${a * b - c}`); wrongs.add(`${res + a}`); wrongs.add(`${res - a}`);
+      }
+      else {
+        // Quy tắc thứ tự ưu tiên
+        qType = "DẠNG 4: QUY TẮC THỨ TỰ PHÉP TÍNH";
+        content = "Khi tính biểu thức có dấu ngoặc đơn, ta phải thực hiện như thế nào?";
+        correct = "Thực hiện phép tính trong ngoặc trước";
+        hint = "Quy tắc vàng: Nếu trong biểu thức có dấu ngoặc thì ta thực hiện trong ngoặc trước (SGK trang 107).";
+        wrongs.add("Thực hiện ngoài ngoặc trước");
+        wrongs.add("Từ trái sang phải không cần để ý ngoặc");
+        wrongs.add("Cộng trừ trước nhân chia sau");
+      }
+
+      const finalWrongs = Array.from(wrongs).filter(w => w !== correct).slice(0, 3);
+      while (finalWrongs.length < 3) finalWrongs.push(`${Math.floor(Math.random() * 80) + 20}`);
+
+      list.push({ type: qType, content: content, correct: correct, wrongs: finalWrongs, hint: hint });
+    }
+    return list;
+  }
+
+  const questions = generateLesson38Questions(20);
+  let currentIndex = 0; let score = 0; let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    document.getElementById('bar-progress').style.width = `${(currentIndex / questions.length) * 100}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) { endGame(true); return; }
+    const q = questions[currentIndex];
+    document.getElementById('lbl-qtype').innerText = `${q.type} (CÂU ${currentIndex + 1}/20)`;
+    document.getElementById('lbl-qcontent').innerText = q.content;
+    document.getElementById('lbl-hint').innerText = "Bé hãy suy nghĩ kỹ nhé!";
+
+    const container = document.getElementById('grid-answers');
+    container.innerHTML = "";
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt'; btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct'); score += 10; updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+      setTimeout(() => { currentIndex++; updateStatus(); renderQuestion(); }, 550);
+    } else {
+      btn.classList.add('disabled'); btn.onclick = null; lives--; updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 Hướng dẫn: " + q.hint;
+      if (lives <= 0) endGame(false);
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉"; title.style.color = "#db2777";
+      msg.innerText = `Bé đã làm đúng tất cả 20 câu Bài 38 với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪"; title.style.color = "#ef4444";
+      msg.innerText = `Bé đã vượt qua ${currentIndex}/${questions.length} câu với ${score} điểm.`;
+    }
+  }
+
+  updateStatus(); renderQuestion();
+</script>
+</body>
+</html>

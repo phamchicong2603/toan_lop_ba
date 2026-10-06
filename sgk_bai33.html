@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SGK Bài 33: Nhiệt độ. Đơn vị đo nhiệt độ</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #fef08a 0%, #facc15 100%);
+      min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 12px;
+    }
+    .game-card {
+      background: white; border-radius: 24px; box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%; max-width: 480px; padding: 22px 18px; text-align: center;
+    }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .btn-back {
+      background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 6px 12px; font-size: 0.88rem; font-weight: bold; color: #475569; text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    .progress-track { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+    .progress-bar { height: 100%; width: 0%; background: #ca8a04; transition: width 0.25s ease; }
+    .question-box {
+      background: #fefce8; border: 2px dashed #ca8a04; border-radius: 18px;
+      padding: 18px 14px; margin-bottom: 14px; text-align: left;
+    }
+    .q-type { font-size: 0.85rem; font-weight: 800; color: #a16207; margin-bottom: 6px; }
+    .q-content { font-size: 1.15rem; line-height: 1.5; font-weight: 700; color: #1e293b; margin: 0; }
+    .hint-box {
+      min-height: 48px; font-size: 0.9rem; color: #854d0e; background: #fef9c3;
+      border-radius: 12px; padding: 8px 12px; margin-bottom: 16px; display: flex;
+      align-items: center; justify-content: center; text-align: left;
+    }
+    .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+    .btn-opt {
+      background: #ca8a04; color: white; border: none; border-radius: 14px;
+      padding: 16px 8px; font-size: 1.12rem; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 0 #a16207; transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #a16207; }
+    .btn-opt.correct { background: #16a34a !important; box-shadow: 0 4px 0 #15803d !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <div id="quiz-section">
+    <div class="header-bar">
+      <a href="sgk_chude5.html" class="btn-back">⬅ Chọn bài khác</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track"><div class="progress-bar" id="bar-progress"></div></div>
+
+    <div class="question-box">
+      <div class="q-type" id="lbl-qtype">DẠNG TOÁN SGK</div>
+      <p class="q-content" id="lbl-qcontent"></p>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy chú ý cách đọc và so sánh nhiệt độ nhé!</div>
+    <div class="answers-grid" id="grid-answers"></div>
+  </div>
+
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="sgk_chude5.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Chọn bài</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function generateLesson33Questions(total = 20) {
+    const questionsPool = [
+      {
+        type: "DẠNG 1: ĐỌC VÀ VIẾT KÝ HIỆU NHIỆT ĐỘ",
+        content: "Nhiệt độ không khí 30 độ C được viết ký hiệu là gì?",
+        correct: "30°C",
+        wrongs: ["30°", "30 C", "300°C"],
+        hint: "Độ C viết ký hiệu là °C, ba mươi độ xê viết là 30°C (SGK trang 91)."
+      },
+      {
+        type: "DẠNG 2: THÂN NHIỆT NGƯỜI BÌNH THƯỜNG",
+        content: "Nhiệt độ cơ thể của một người bình thường khỏe mạnh là khoảng bao nhiêu?",
+        correct: "37°C",
+        wrongs: ["30°C", "39°C", "42°C"],
+        hint: "Nhiệt độ cơ thể người bình thường là khoảng 37°C; khi trên 37.5°C đến 38°C là có dấu hiệu sốt (SGK trang 92)."
+      },
+      {
+        type: "DẠNG 2: NHẬN BIẾT SỐT CAO",
+        content: "Bác sĩ đo nhiệt độ của Nam là 39°C. Nhiệt độ này như thế nào so với người bình thường (37°C)?",
+        correct: "Cao hơn (Nam đang bị sốt)",
+        wrongs: ["Bình thường", "Thấp hơn bình thường", "Rất lạnh"],
+        hint: "Vì 39°C > 37°C nên nhiệt độ của Nam cao hơn bình thường, Nam đang bị sốt (SGK trang 92)."
+      },
+      {
+        type: "DẠNG 3: SO SÁNH NHIỆT ĐỘ CÁC NƠI",
+        content: "Nhiệt độ buổi sáng ở Hà Nội là 30°C, ở Sa Pa là 10°C. Nơi nào có thời tiết lạnh hơn?",
+        correct: "Sa Pa lạnh hơn",
+        wrongs: ["Hà Nội lạnh hơn", "Hai nơi bằng nhau", "Không xác định được"],
+        hint: "Nhiệt độ càng thấp thì trời càng lạnh: 10°C < 30°C nên Sa Pa lạnh hơn (SGK trang 91)."
+      },
+      {
+        type: "DẠNG 4: NHIỆT ĐỘ TRONG NGÀY",
+        content: "Nhiệt độ sáng là 27°C, trưa là 36°C, đêm là 15°C. Buổi nào trong ngày có nhiệt độ cao nhất?",
+        correct: "Buổi trưa (36°C)",
+        wrongs: ["Buổi sáng (27°C)", "Buổi đêm (15°C)", "Buổi chiều"],
+        hint: "So sánh các số: 36°C > 27°C > 15°C, vậy buổi trưa nóng nhất (SGK trang 92)."
+      }
+    ];
+
+    const list = [];
+    for (let i = 0; i < total; i++) {
+      const template = questionsPool[i % questionsPool.length];
+      list.push({
+        type: template.type,
+        content: template.content,
+        correct: template.correct,
+        wrongs: [...template.wrongs],
+        hint: template.hint
+      });
+    }
+    return list;
+  }
+
+  const questions = generateLesson33Questions(20);
+  let currentIndex = 0; let score = 0; let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    document.getElementById('bar-progress').style.width = `${(currentIndex / questions.length) * 100}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) { endGame(true); return; }
+    const q = questions[currentIndex];
+    document.getElementById('lbl-qtype').innerText = `${q.type} (CÂU ${currentIndex + 1}/20)`;
+    document.getElementById('lbl-qcontent').innerText = q.content;
+    document.getElementById('lbl-hint').innerText = "Bé hãy suy nghĩ kỹ nhé!";
+
+    const container = document.getElementById('grid-answers');
+    container.innerHTML = "";
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt'; btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct'); score += 10; updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+      setTimeout(() => { currentIndex++; updateStatus(); renderQuestion(); }, 550);
+    } else {
+      btn.classList.add('disabled'); btn.onclick = null; lives--; updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 Hướng dẫn: " + q.hint;
+      if (lives <= 0) endGame(false);
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉"; title.style.color = "#ca8a04";
+      msg.innerText = `Bé đã làm đúng tất cả 20 câu Bài 33 với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪"; title.style.color = "#ef4444";
+      msg.innerText = `Bé đã vượt qua ${currentIndex}/${questions.length} câu với ${score} điểm.`;
+    }
+  }
+
+  updateStatus(); renderQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Chủ đề 6: Chuyên đề phép chia và Tìm X</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #fef08a 0%, #fde047 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+    .game-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 480px;
+      padding: 22px 18px;
+      text-align: center;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .btn-home {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #475569;
+      text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #ca8a04;
+      transition: width 0.25s ease;
+    }
+    .question-box {
+      background: #fefce8;
+      border: 2px dashed #eab308;
+      border-radius: 18px;
+      padding: 16px 14px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .q-number { font-size: 0.9rem; font-weight: 800; color: #a16207; margin-bottom: 6px; }
+    .q-content { font-size: 1.05rem; line-height: 1.5; font-weight: 600; color: #1e293b; margin: 0; }
+    .hint-box {
+      min-height: 48px;
+      font-size: 0.9rem;
+      color: #854d0e;
+      background: #fef9c3;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+    }
+    .answers-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+    .btn-opt {
+      background: #eab308;
+      color: #1e293b;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 12px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #ca8a04;
+      transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #ca8a04; }
+    .btn-opt.correct { background: #10b981 !important; color: white !important; box-shadow: 0 4px 0 #047857 !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; color: #64748b !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <div id="quiz-section">
+    <div class="header-bar">
+      <a href="index.html" class="btn-home">🏠 Trang chủ</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-bar" id="bar-progress"></div>
+    </div>
+
+    <div class="question-box">
+      <div class="q-number" id="lbl-qnum">BÀI TẬP 1</div>
+      <p class="q-content" id="lbl-qcontent"></p>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy nhớ các quy tắc về phép chia nhé!</div>
+    <div class="answers-list" id="answers-container"></div>
+  </div>
+
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="index.html" class="btn-opt" style="flex: 1; background: #64748b; color: white; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Trang chủ</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Chuyển thể từ dạng toán suy luận phép chia, số đoạn cắt và tìm x
+  const rawQuestions = [
+    {
+      content: "An nghĩ ra một số, biết rằng số đó gấp lên 3 lần thì bằng số lớn nhất có hai chữ số. Hỏi số An nghĩ là bao nhiêu?",
+      correct: "33",
+      wrongs: ["30", "27", "99"],
+      hint: "Số lớn nhất có 2 chữ số là 99. Muốn tìm số đó: 99 : 3 = 33."
+    },
+    {
+      content: "Tích của một số với số lớn nhất có 1 chữ số bằng số tròn chục lớn nhất có 2 chữ số. Số đó là bao nhiêu?",
+      correct: "10",
+      wrongs: ["9", "12", "8"],
+      hint: "Số lớn nhất có 1 chữ số là 9. Số tròn chục lớn nhất có 2 chữ số là 90. Phép tính: 90 : 9 = 10."
+    },
+    {
+      content: "Thương của hai số bằng 25. Nếu giữ nguyên số chia và gấp số bị chia lên 3 lần thì thương mới bằng bao nhiêu?",
+      correct: "75",
+      wrongs: ["28", "50", "25"],
+      hint: "Khi gấp số bị chia lên bao nhiêu lần thì thương cũng tăng lên bấy nhiêu lần: 25 × 3 = 75."
+    },
+    {
+      content: "Thương của hai số bằng 84. Nếu giữ nguyên số bị chia và gấp số chia lên 4 lần thì thương mới bằng bao nhiêu?",
+      correct: "21",
+      wrongs: ["336", "80", "42"],
+      hint: "Khi gấp số chia lên 4 lần thì thương sẽ giảm đi 4 lần: 84 : 4 = 21."
+    },
+    {
+      content: "Thương của hai số bằng 56. Nếu cả số bị chia và số chia cùng gấp lên 3 lần thì thương mới thay đổi thế nào?",
+      correct: "Vẫn bằng 56",
+      wrongs: ["Gấp 3 lần (168)", "Giảm 3 lần", "Bằng 0"],
+      hint: "Khi cả số bị chia và số chia cùng nhân với một số thì thương không bao giờ thay đổi."
+    },
+    {
+      content: "Một lớp học có 12 bàn, mỗi bàn 4 chỗ ngồi. Nay thay bằng loại bàn 2 chỗ ngồi thì cần bao nhiêu bàn để đủ chỗ cho cả lớp?",
+      correct: "24 bàn",
+      wrongs: ["18 bàn", "20 bàn", "6 bàn"],
+      hint: "Cả lớp có: 12 × 4 = 48 học sinh. Cần số bàn loại 2 chỗ: 48 : 2 = 24 bàn."
+    },
+    {
+      content: "Cô giáo có 5 gói kẹo, mỗi gói 24 chiếc. Cô chia đều cho mỗi cháu mẫu giáo 5 chiếc. Hỏi có bao nhiêu cháu được nhận kẹo?",
+      correct: "24 cháu",
+      wrongs: ["20 cháu", "25 cháu", "120 cháu"],
+      hint: "Tổng số kẹo: 5 × 24 = 120 chiếc. Số cháu nhận kẹo là: 120 : 5 = 24 cháu."
+    },
+    {
+      content: "Một sợi dây dài 15dm được cắt thành các đoạn dài 10cm. Hỏi cắt được bao nhiêu đoạn?",
+      correct: "15 đoạn",
+      wrongs: ["10 đoạn", "5 đoạn", "150 đoạn"],
+      hint: "Đổi 15dm = 150cm. Số đoạn cắt được là: 150 : 10 = 15 đoạn."
+    },
+    {
+      content: "Một sợi dây cắt thành 15 đoạn ngắn. Hỏi phải thực hiện bao nhiêu nhát cắt?",
+      correct: "14 nhát cắt",
+      wrongs: ["15 nhát cắt", "16 nhát cắt", "13 nhát cắt"],
+      hint: "Số nhát cắt luôn ít hơn số đoạn tạo thành 1 đơn vị: 15 - 1 = 14 nhát."
+    },
+    {
+      content: "Cắt một sợi dây thành các đoạn dài 25dm, cần đúng 7 nhát cắt để xong. Hỏi lúc đầu sợi dây dài bao nhiêu mét?",
+      correct: "20 mét",
+      wrongs: ["175 mét", "17,5 mét", "25 mét"],
+      hint: "Cắt 7 nhát được 8 đoạn. Dây dài: 25 × 8 = 200dm = 20 mét."
+    },
+    {
+      content: "Một số chia cho 12 được thương là 5. Nếu đem số đó chia cho 2 thì được thương bằng bao nhiêu?",
+      correct: "30",
+      wrongs: ["60", "15", "10"],
+      hint: "Số đó là: 12 × 5 = 60. Đem chia cho 2: 60 : 2 = 30."
+    },
+    {
+      content: "Đếm trên bãi cỏ thấy có 16 chân trâu và 24 chân bò. Hỏi có tất cả bao nhiêu con trâu và bò?",
+      correct: "10 con",
+      wrongs: ["8 con", "12 con", "40 con"],
+      hint: "Mỗi con có 4 chân. Số trâu: 16 : 4 = 4 con. Số bò: 24 : 4 = 6 con. Tổng cộng: 4 + 6 = 10 con."
+    },
+    {
+      content: "Tìm số x biết: x : 5 = 4",
+      correct: "x = 20",
+      wrongs: ["x = 9", "x = 1", "x = 25"],
+      hint: "Muốn tìm số bị chia, ta lấy thương nhân với số chia: x = 4 × 5 = 20."
+    },
+    {
+      content: "Tìm số x biết: 64 : x = 64 : 2",
+      correct: "x = 2",
+      wrongs: ["x = 32", "x = 4", "x = 1"],
+      hint: "Hai phép chia có cùng số bị chia và bằng nhau thì hai số chia phải bằng nhau: x = 2."
+    }
+  ];
+
+  const questions = [...rawQuestions].sort(() => Math.random() - 0.5);
+  let currentIndex = 0;
+  let score = 0;
+  let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    const percent = (currentIndex / questions.length) * 100;
+    document.getElementById('bar-progress').style.width = `${percent}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) {
+      endGame(true);
+      return;
+    }
+    const q = questions[currentIndex];
+    document.getElementById('lbl-qnum').innerText = `BÀI TẬP ${currentIndex + 1} / ${questions.length}`;
+    document.getElementById('lbl-qcontent').innerText = q.content;
+    document.getElementById('lbl-hint').innerText = "Bé hãy nhớ các quy tắc về phép chia nhé!";
+
+    const container = document.getElementById('answers-container');
+    container.innerHTML = "";
+
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt';
+      btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct');
+      score += 10;
+      updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+
+      setTimeout(() => {
+        currentIndex++;
+        updateStatus();
+        renderQuestion();
+      }, 550);
+    } else {
+      btn.classList.add('disabled');
+      btn.onclick = null;
+      lives--;
+      updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 Hướng dẫn: " + q.hint;
+      if (lives <= 0) endGame(false);
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉";
+      title.style.color = "#10b981";
+      msg.innerText = `Bé đã nắm vững chuyên đề phép chia với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪";
+      title.style.color = "#ef4444";
+      msg.innerText = `Bé đã hoàn thành ${currentIndex}/${questions.length} bài toán với ${score} điểm.`;
+    }
+  }
+
+  updateStatus();
+  renderQuestion();
+</script>
+</body>
+</html>

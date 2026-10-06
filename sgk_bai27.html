@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SGK Bài 27: Giảm một số đi một số lần</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #fef08a 0%, #facc15 100%);
+      min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 12px;
+    }
+    .game-card {
+      background: white; border-radius: 24px; box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%; max-width: 480px; padding: 22px 18px; text-align: center;
+    }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .btn-back {
+      background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 6px 12px; font-size: 0.88rem; font-weight: bold; color: #475569; text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    .progress-track { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+    .progress-bar { height: 100%; width: 0%; background: #ca8a04; transition: width 0.25s ease; }
+    .question-box {
+      background: #fefce8; border: 2px dashed #ca8a04; border-radius: 18px;
+      padding: 18px 14px; margin-bottom: 14px; text-align: left;
+    }
+    .q-type { font-size: 0.85rem; font-weight: 800; color: #a16207; margin-bottom: 6px; }
+    .q-content { font-size: 1.15rem; line-height: 1.5; font-weight: 700; color: #1e293b; margin: 0; }
+    .hint-box {
+      min-height: 48px; font-size: 0.9rem; color: #854d0e; background: #fef9c3;
+      border-radius: 12px; padding: 8px 12px; margin-bottom: 16px; display: flex;
+      align-items: center; justify-content: center; text-align: left;
+    }
+    .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+    .btn-opt {
+      background: #ca8a04; color: white; border: none; border-radius: 14px;
+      padding: 16px 8px; font-size: 1.15rem; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 0 #a16207; transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #a16207; }
+    .btn-opt.correct { background: #16a34a !important; box-shadow: 0 4px 0 #15803d !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <div id="quiz-section">
+    <div class="header-bar">
+      <a href="sgk_chude4.html" class="btn-back">⬅ Chọn bài khác</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track"><div class="progress-bar" id="bar-progress"></div></div>
+
+    <div class="question-box">
+      <div class="q-type" id="lbl-qtype">DẠNG TOÁN SGK</div>
+      <p class="q-content" id="lbl-qcontent"></p>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy nhớ: Giảm đi số lần thì làm phép chia!</div>
+    <div class="answers-grid" id="grid-answers"></div>
+  </div>
+
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="sgk_chude4.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Chọn bài</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function generateLesson27Questions(total = 20) {
+    const list = [];
+    for (let i = 0; i < total; i++) {
+      const type = i % 4;
+      let qType, content, correct, hint;
+      const wrongs = new Set();
+
+      if (type === 0) {
+        // Quy tắc giảm một số đi một số lần (SGK Trang 79)
+        const times = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
+        const res = Math.floor(Math.random() * 6) + 4; // 4 - 9
+        const original = res * times;
+        qType = "DẠNG 1: GIẢM MỘT SỐ ĐI MỘT SỐ LẦN";
+        content = `Giảm số ${original} đi ${times} lần ta được số nào?`;
+        correct = `${res}`;
+        hint = `Muốn giảm một số đi nhiều lần, ta lấy số đó chia cho số lần: ${original} : ${times} = ${res}.`;
+        wrongs.add(`${original - times}`); wrongs.add(`${res + 1}`); wrongs.add(`${res - 1}`);
+      }
+      else if (type === 1) {
+        // Phân biệt giảm đi số lần vs bớt đi đơn vị (SGK Trang 79, 80)
+        const a = (Math.floor(Math.random() * 5) + 4) * 3;
+        const b = 3;
+        qType = "DẠNG 2: PHÂN BIỆT GIẢM VÀ BỚT";
+        content = `Số ${a} bớt đi ${b} đơn vị thì còn lại bao nhiêu?`;
+        correct = `${a - b}`;
+        hint = `Bớt đi đơn vị thì dùng phép trừ: ${a} - ${b} = ${a - b}.`;
+        wrongs.add(`${a / b}`); wrongs.add(`${a - b + 2}`); wrongs.add(`${a + b}`);
+      }
+      else if (type === 2) {
+        // Chuỗi thay đổi tăng giảm (SGK Trang 80 Bài 1, Bài 2)
+        const start = Math.floor(Math.random() * 5) + 3; // 3 - 7
+        const doubled = start * 2;
+        const res = doubled * 2;
+        qType = "DẠNG 3: CHUỖI GẤP VÀ GIẢM";
+        content = `Số ${start} gấp lên 2 lần, rồi lại gấp tiếp 2 lần nữa thì được số mấy?`;
+        correct = `${res}`;
+        hint = `Bước 1: ${start} × 2 = ${doubled}. Bước 2: ${doubled} × 2 = ${res}.`;
+        wrongs.add(`${start + 4}`); wrongs.add(`${res + 2}`); wrongs.add(`${res - 2}`);
+      }
+      else {
+        // Bài toán nhãn vở Nam / bút màu Mai (SGK Trang 79, 80)
+        const initialLabels = [36, 42, 48][Math.floor(Math.random() * 3)];
+        const times = 3;
+        const remaining = initialLabels / times;
+        qType = "DẠNG 4: TOÁN LỜI VĂN GIẢM NHIỀU LẦN";
+        content = `Nam có ${initialLabels} nhãn vở, số nhãn vở còn lại của Nam giảm đi ${times} lần so với lúc đầu. Hỏi Nam còn lại bao nhiêu nhãn vở?`;
+        correct = `${remaining} nhãn vở`;
+        hint = `Lấy số nhãn vở ban đầu chia cho số lần giảm: ${initialLabels} : ${times} = ${remaining} nhãn vở.`;
+        wrongs.add(`${initialLabels - times} nhãn vở`); wrongs.add(`${remaining + 2} nhãn vở`); wrongs.add(`${remaining - 2} nhãn vở`);
+      }
+
+      const finalWrongs = Array.from(wrongs).filter(w => w !== correct).slice(0, 3);
+      while (finalWrongs.length < 3) finalWrongs.push(`${Math.floor(Math.random() * 40) + 5}`);
+
+      list.push({ type: qType, content: content, correct: correct, wrongs: finalWrongs, hint: hint });
+    }
+    return list;
+  }
+
+  const questions = generateLesson27Questions(20);
+  let currentIndex = 0; let score = 0; let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    document.getElementById('bar-progress').style.width = `${(currentIndex / questions.length) * 100}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) { endGame(true); return; }
+    const q = questions[currentIndex];
+    document.getElementById('lbl-qtype').innerText = `${q.type} (CÂU ${currentIndex + 1}/20)`;
+    document.getElementById('lbl-qcontent').innerText = q.content;
+    document.getElementById('lbl-hint').innerText = "Bé hãy suy nghĩ kỹ nhé!";
+
+    const container = document.getElementById('grid-answers');
+    container.innerHTML = "";
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt'; btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct'); score += 10; updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+      setTimeout(() => { currentIndex++; updateStatus(); renderQuestion(); }, 550);
+    } else {
+      btn.classList.add('disabled'); btn.onclick = null; lives--; updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 Hướng dẫn: " + q.hint;
+      if (lives <= 0) endGame(false);
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉"; title.style.color = "#ca8a04";
+      msg.innerText = `Bé đã làm đúng tất cả 20 câu Bài 27 với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪"; title.style.color = "#ef4444";
+      msg.innerText = `Bé đã vượt qua ${currentIndex}/${questions.length} câu với ${score} điểm.`;
+    }
+  }
+
+  updateStatus(); renderQuestion();
+</script>
+</body>
+</html>

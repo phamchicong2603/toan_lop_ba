@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Toán Vui Lớp 3 - Trang Chủ</title>
+  <title>Học Toán Lớp 3</title>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
       margin: 0;
-      background: linear-gradient(180deg, #c7d2fe 0%, #bae6fd 100%);
+      background: linear-gradient(180deg, #e0e7ff 0%, #dbeafe 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -18,40 +18,60 @@
     .main-box {
       background: white;
       border-radius: 24px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
       width: 100%;
-      max-width: 440px;
-      padding: 26px 20px;
+      max-width: 480px;
+      padding: 24px 18px;
       text-align: center;
     }
-    h1 { color: #1e3a8a; font-size: 1.7rem; margin: 0 0 6px 0; }
-    p.sub { color: #64748b; font-size: 0.95rem; margin-bottom: 22px; }
-    .list-topics { display: flex; flex-direction: column; gap: 14px; }
+    h1 { color: #1e3a8a; font-size: 1.7rem; margin: 0 0 4px 0; }
+    p.sub { color: #64748b; font-size: 0.92rem; margin-bottom: 20px; }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 18px 0 10px 0;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e2e8f0;
+      text-align: left;
+    }
+    .section-title span.tag {
+      font-size: 0.75rem;
+      background: #2563eb;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+
+    .list-topics { display: flex; flex-direction: column; gap: 11px; }
     .topic-link {
       display: flex;
       align-items: center;
-      gap: 15px;
-      padding: 16px;
+      gap: 12px;
+      padding: 13px 15px;
       background: #f8fafc;
       border: 2px solid #e2e8f0;
-      border-radius: 18px;
+      border-radius: 16px;
       text-decoration: none;
       color: inherit;
       transition: all 0.15s;
     }
     .topic-link:active { transform: scale(0.98); background: #eff6ff; }
-    .icon { font-size: 2.2rem; min-width: 45px; text-align: center; }
+    .topic-link.sgk-link { border-color: #3b82f6; background: #eff6ff; }
+    .icon { font-size: 2rem; min-width: 40px; text-align: center; }
     .info { text-align: left; }
-    .info h3 { margin: 0 0 4px 0; color: #0f172a; font-size: 1.05rem; }
-    .info p { margin: 0 0 6px 0; font-size: 0.85rem; color: #64748b; }
+    .info h3 { margin: 0 0 3px 0; color: #0f172a; font-size: 1rem; }
+    .info p { margin: 0 0 4px 0; font-size: 0.82rem; color: #64748b; }
     .badge {
       display: inline-block;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: bold;
       padding: 2px 8px;
-      border-radius: 10px;
-      background: #dbeafe;
-      color: #1d4ed8;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -59,67 +79,80 @@
 
 <div class="main-box">
   <h1>🌟 Vui Học Toán Lớp 3 🌟</h1>
-  <p class="sub">Bé hãy chọn chủ đề để bắt đầu nhé!</p>
+  <p class="sub">Chương trình kết nối tri thức & bài tập rèn luyện</p>
+
+  <!-- MỤC 1: TOÁN SÁCH GIÁO KHOA (NẰM PHÍA TRÊN) -->
+  <div class="section-title">
+    📚 TOÁN SÁCH GIÁO KHOA <span class="tag">KẾT NỐI TRI THỨC</span>
+  </div>
 
   <div class="list-topics">
-    <!-- Chủ đề 1 -->
+    <!-- Bài SGK Chủ đề 1 -->
+    <a href="sgk_chude1.html" class="topic-link sgk-link">
+      <div class="icon">📘</div>
+      <div class="info">
+        <h3>SGK Chủ đề 1: Ôn tập & Bổ sung (Bài 1 - 8)</h3>
+        <p>Số đến 1.000, cộng trừ có nhớ, bảng nhân chia 2; 3; 4; 5.</p>
+        <span class="badge" style="background: #dbeafe; color: #1d4ed8;">16 bài tập mẫu SGK</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- MỤC 2: BÀI TẬP BỔ TRỢ & NÂNG CAO (NẰM PHÍA DƯỚI) -->
+  <div class="section-title" style="margin-top: 24px;">
+    🎯 BÀI TẬP BỔ TRỢ THEO CHUYÊN ĐỀ
+  </div>
+
+  <div class="list-topics">
     <a href="chude1.html" class="topic-link">
       <div class="icon">🎯</div>
       <div class="info">
         <h3>Chủ đề 1: Phép Cộng & Trừ phạm vi 20</h3>
-        <p>Luyện tập 20 câu ngẫu nhiên phản xạ nhanh.</p>
-        <span class="badge">20 câu • Ngẫu nhiên</span>
+        <span class="badge" style="background: #e2e8f0; color: #334155;">20 bài ngẫu nhiên</span>
       </div>
     </a>
 
-    <!-- Chủ đề 2 -->
     <a href="chude2.html" class="topic-link">
       <div class="icon">✖️</div>
       <div class="info">
-        <h3>Chủ đề 2: Bảng Nhân (từ 2 đến 9)</h3>
-        <p>Học và ôn luyện các bảng cửu chương nhân.</p>
-        <span class="badge">20 câu • Ngẫu nhiên</span>
+        <h3>Chủ đề 2: Bảng Nhân (2 đến 9)</h3>
+        <span class="badge" style="background: #fef3c7; color: #b45309;">20 bài ngẫu nhiên</span>
       </div>
     </a>
 
-    <!-- Chủ đề 3 -->
     <a href="chude3.html" class="topic-link">
       <div class="icon">➗</div>
       <div class="info">
-        <h3>Chủ đề 3: Bảng Chia (từ 2 đến 9)</h3>
-        <p>Rèn luyện phép chia hết cơ bản lớp 3.</p>
-        <span class="badge">20 câu • Ngẫu nhiên</span>
-      </div>
-    </a>
-   <!-- Chủ đề 4 -->
-    <a href="chude4.html" class="topic-link">
-      <div class="icon">📖</div>
-      <div class="info">
-        <h3>Chủ đề 4: Toán Lời Văn (Gấp, Giảm Nhiều Lần)</h3>
-        <p>12 bài toán đố rèn tư duy suy luận theo phiếu học tập.</p>
-        <span class="badge" style="background: #fef3c7; color: #b45309;">12 bài tập • Đề chuẩn</span>
-      </div>
-    </a>
- <!-- Chủ đề 5 -->
-    <a href="chude5.html" class="topic-link">
-      <div class="icon">🍰</div>
-      <div class="info">
-        <h3>Chủ đề 5: Tìm Một Phần Mấy Của Một Số</h3>
-        <p>Các bài toán chia phần, tìm số ban đầu và tính tổng/hiệu.</p>
-        <span class="badge" style="background: #e0e7ff; color: #3730a3;">14 bài tập • Luyện tư duy</span>
+        <h3>Chủ đề 3: Bảng Chia (2 đến 9)</h3>
+        <span class="badge" style="background: #dcfce7; color: #15803d;">20 bài ngẫu nhiên</span>
       </div>
     </a>
 
-    <!-- Chủ đề 6 -->
+    <a href="chude4.html" class="topic-link">
+      <div class="icon">📖</div>
+      <div class="info">
+        <h3>Chủ đề 4: Gấp, Giảm nhiều lần (Toán lời văn)</h3>
+        <span class="badge" style="background: #fce7f3; color: #be185d;">12 bài tập phiếu cô Chiến</span>
+      </div>
+    </a>
+
+    <a href="chude5.html" class="topic-link">
+      <div class="icon">🍰</div>
+      <div class="info">
+        <h3>Chủ đề 5: Tìm một phần mấy của một số</h3>
+        <span class="badge" style="background: #e0e7ff; color: #4338ca;">14 bài tập nâng cao</span>
+      </div>
+    </a>
+
     <a href="chude6.html" class="topic-link">
       <div class="icon">💡</div>
       <div class="info">
-        <h3>Chủ đề 6: Chuyên Đề Phép Chia & Tìm X</h3>
-        <p>Toán suy luận thương số, bài toán cưa cây, xếp bàn học.</p>
-        <span class="badge" style="background: #fef08a; color: #854d0e;">14 bài tập • Nâng cao</span>
+        <h3>Chủ đề 6: Chuyên đề Phép Chia & Tìm X</h3>
+        <span class="badge" style="background: #fef9c3; color: #a16207;">14 bài tập tư duy</span>
       </div>
-    </a>   
+    </a>
   </div>
+
 </div>
 
 </body>

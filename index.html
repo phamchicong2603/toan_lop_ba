@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#3b82f6">
-  <title>Vui Học Toán Lớp 3</title>
+  <title>Toán Vui Lớp 3 - Trang Chủ</title>
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; user-select: none; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
       margin: 0;
       background: linear-gradient(180deg, #c7d2fe 0%, #bae6fd 100%);
@@ -14,456 +13,80 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 12px;
+      padding: 15px;
     }
-    #app-container {
-      background: #ffffff;
+    .main-box {
+      background: white;
       border-radius: 24px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
       width: 100%;
       max-width: 440px;
-      min-height: 520px;
-      padding: 22px 18px;
-      display: flex;
-      flex-direction: column;
-      position: relative;
+      padding: 26px 20px;
+      text-align: center;
     }
-
-    /* --- BỐ CỤC TRANG CHỦ --- */
-    #page-home {
+    h1 { color: #1e3a8a; font-size: 1.7rem; margin: 0 0 6px 0; }
+    p.sub { color: #64748b; font-size: 0.95rem; margin-bottom: 22px; }
+    
+    .list-topics { display: flex; flex-direction: column; gap: 14px; }
+    
+    /* Thẻ liên kết chuyển trang */
+    .topic-link {
       display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-    .header-box { text-align: center; margin-bottom: 20px; }
-    .header-box h1 { font-size: 1.7rem; color: #1e3a8a; margin: 0 0 6px 0; }
-    .header-box p { font-size: 0.95rem; color: #64748b; margin: 0; }
-
-    .topic-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      flex: 1;
-    }
-    .topic-btn {
+      align-items: center;
+      gap: 15px;
+      padding: 16px;
       background: #f8fafc;
       border: 2px solid #e2e8f0;
       border-radius: 18px;
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      text-align: left;
-      transition: transform 0.1s, border-color 0.2s;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.15s;
     }
-    .topic-btn:active { transform: scale(0.98); }
-    .topic-btn:hover { border-color: #3b82f6; background: #eff6ff; }
-    .topic-icon { font-size: 2rem; min-width: 45px; text-align: center; }
-    .topic-details h3 { margin: 0 0 4px 0; font-size: 1.05rem; color: #0f172a; }
-    .topic-details p { margin: 0 0 6px 0; font-size: 0.85rem; color: #64748b; }
+    .topic-link:active { transform: scale(0.98); background: #eff6ff; }
+    .topic-link.active-link { border-color: #3b82f6; }
+    .icon { font-size: 2.2rem; }
+    .info { text-align: left; }
+    .info h3 { margin: 0 0 4px 0; color: #0f172a; font-size: 1.05rem; }
+    .info p { margin: 0 0 6px 0; font-size: 0.85rem; color: #64748b; }
     .badge {
       display: inline-block;
       font-size: 0.75rem;
-      font-weight: 700;
+      font-weight: bold;
       padding: 2px 8px;
       border-radius: 10px;
       background: #dbeafe;
       color: #1d4ed8;
     }
-
-    /* --- BỐ CỤC TRANG BÀI TẬP (MÀN HÌNH CON) --- */
-    #page-quiz {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-    .quiz-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .btn-nav {
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      padding: 6px 12px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #475569;
-      cursor: pointer;
-    }
-    .status-text { font-size: 1rem; font-weight: 700; color: #1e293b; }
-
-    .progress-track {
-      width: 100%;
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 99px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #10b981;
-      transition: width 0.25s ease;
-    }
-
-    .question-card {
-      background: #eff6ff;
-      border: 2px dashed #60a5fa;
-      border-radius: 18px;
-      padding: 16px 10px;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-    .prompt-label { font-size: 0.9rem; color: #475569; margin-bottom: 4px; }
-    .target-val { font-size: 2.8rem; font-weight: 800; color: #ea580c; margin: 0; }
-
-    .hint-box {
-      min-height: 44px;
-      font-size: 0.88rem;
-      color: #b45309;
-      background: #fef3c7;
-      border-radius: 10px;
-      padding: 6px 10px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .answers-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-    .opt-btn {
-      background: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 14px;
-      padding: 16px 6px;
-      font-size: 1.25rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 0 #1d4ed8;
-      transition: transform 0.05s;
-    }
-    .opt-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0 #1d4ed8;
-    }
-    .opt-btn.correct {
-      background: #10b981 !important;
-      box-shadow: 0 4px 0 #047857 !important;
-    }
-    .opt-btn.disabled {
-      background: #cbd5e1 !important;
-      box-shadow: 0 4px 0 #94a3b8 !important;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-
-    /* --- BỐ CỤC TRANG TỔNG KẾT --- */
-    #page-result {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      flex: 1;
-      padding: 20px 0;
-    }
-    .result-title { font-size: 1.6rem; font-weight: 800; margin: 0 0 10px 0; }
-    .result-score { font-size: 1.15rem; color: #475569; margin-bottom: 24px; }
-    .result-actions { display: flex; width: 100%; gap: 10px; }
-
-    .hidden { display: none !important; }
+    .locked { opacity: 0.55; pointer-events: none; }
   </style>
 </head>
 <body>
 
-<div id="app-container">
+<div class="main-box">
+  <h1>🌟 Vui Học Toán Lớp 3 🌟</h1>
+  <p class="sub">Bé hãy chọn chủ đề để bắt đầu nhé!</p>
 
-  <!-- 1. MÀN HÌNH TRANG CHỦ -->
-  <div id="page-home">
-    <div class="header-box">
-      <h1>🌟 Toán Vui Lớp 3 🌟</h1>
-      <p>Chọn chủ đề để bắt đầu luyện tập nhé!</p>
-    </div>
-
-    <div class="topic-list">
-      <div class="topic-btn" onclick="openQuiz(1)">
-        <div class="topic-icon">➕</div>
-        <div class="topic-details">
-          <h3>Chủ đề 1: Phép Cộng & Trừ phạm vi 20</h3>
-          <p>Luyện phản xạ nhẩm nhanh không cần que tính.</p>
-          <span class="badge">20 bài tập</span>
-        </div>
+  <div class="list-topics">
+    <!-- Bấm vào đây sẽ mở trực tiếp trang chude1.html -->
+    <a href="chude1.html" class="topic-link active-link">
+      <div class="icon">🎯</div>
+      <div class="info">
+        <h3>Chủ đề 1: Cộng, Trừ trong phạm vi 20</h3>
+        <p>Luyện tập 20 câu ngẫu nhiên không trùng lặp.</p>
+        <span class="badge">Đang mở • Tự động sinh đề</span>
       </div>
+    </a>
 
-      <div class="topic-btn" onclick="openQuiz(2)">
-        <div class="topic-icon">✖️</div>
-        <div class="topic-details">
-          <h3>Chủ đề 2: Bảng Nhân (2 đến 9)</h3>
-          <p>Thuộc lòng bảng cửu chương nhân cơ bản.</p>
-          <span class="badge">20 bài tập</span>
-        </div>
-      </div>
-
-      <div class="topic-btn" onclick="openQuiz(3)">
-        <div class="topic-icon">➗</div>
-        <div class="topic-details">
-          <h3>Chủ đề 3: Bảng Chia (2 đến 9)</h3>
-          <p>Thực hành quan hệ phép chia và phép nhân.</p>
-          <span class="badge">20 bài tập</span>
-        </div>
+    <div class="topic-link locked">
+      <div class="icon">✖️️</div>
+      <div class="info">
+        <h3>Chủ đề 2: Bảng nhân 2 đến 9</h3>
+        <p>Sẽ thêm trang chude2.html tiếp theo.</p>
+        <span class="badge" style="background: #f1f5f9; color: #94a3b8;">Chưa mở</span>
       </div>
     </div>
   </div>
-
-  <!-- 2. MÀN HÌNH BÀI TẬP (TRANG CON) -->
-  <div id="page-quiz" class="hidden">
-    <div class="quiz-nav">
-      <button class="btn-nav" onclick="showPage('page-home')">🏠 Trang chủ</button>
-      <span class="status-text" id="lbl-score">⭐ Điểm: 0</span>
-      <span class="status-text" id="lbl-lives">❤️ Lượt: 3</span>
-    </div>
-
-    <div class="progress-track">
-      <div class="progress-bar" id="bar-progress"></div>
-    </div>
-
-    <div class="question-card">
-      <div class="prompt-label" id="lbl-question-title">Tìm phép tính có kết quả bằng:</div>
-      <h2 class="target-val" id="lbl-target">12</h2>
-    </div>
-
-    <div class="hint-box" id="lbl-hint">Bé hãy quan sát thật kỹ các phương án nhé!</div>
-
-    <div class="answers-grid" id="grid-answers"></div>
-  </div>
-
-  <!-- 3. MÀN HÌNH TỔNG KẾT ĐIỂM -->
-  <div id="page-result" class="hidden">
-    <h2 class="result-title" id="lbl-res-title">Hoàn thành bài tập!</h2>
-    <p class="result-score" id="lbl-res-detail"></p>
-    <div class="result-actions">
-      <button class="opt-btn" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569;" onclick="showPage('page-home')">Trang chủ</button>
-      <button class="opt-btn" style="flex: 1;" onclick="retryCurrentQuiz()">Luyện lại</button>
-    </div>
-  </div>
-
 </div>
 
-<script>
-  // --- TẠO ÂM THANH TRỰC TIẾP (WEB AUDIO) ---
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  function playSound(isCorrect) {
-    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    if (isCorrect) {
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nốt D5
-      osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); // Nốt A5
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.25);
-    } else {
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-      osc.frequency.setValueAtTime(146.83, audioCtx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.25);
-    }
-  }
-
-  // --- DỮ LIỆU CÂU HỎI THEO CHỦ ĐỀ ---
-  const database = {
-    1: [ // Phép cộng, trừ phạm vi 20
-      { target: 11, correct: "7 + 4", wrongs: ["6 + 4", "8 + 5", "7 + 5"], hint: "Tách 4 thành 3 + 1: 7 + 3 = 10, thêm 1 là 11." },
-      { target: 12, correct: "17 - 5", wrongs: ["16 - 5", "18 - 5", "15 - 4"], hint: "Hàng đơn vị: 7 trừ 5 được 2, thêm 1 chục là 12." },
-      { target: 15, correct: "8 + 7", wrongs: ["8 + 6", "9 + 7", "7 + 7"], hint: "8 thêm 2 thành 10, 10 cộng thêm 5 là 15." },
-      { target: 9, correct: "15 - 6", wrongs: ["14 - 6", "16 - 8", "15 - 7"], hint: "15 trừ 5 được 10, bớt tiếp 1 bằng 9." },
-      { target: 14, correct: "6 + 8", wrongs: ["5 + 8", "7 + 8", "6 + 7"], hint: "8 thêm 2 thành 10, 10 cộng 4 bằng 14." },
-      { target: 8, correct: "13 - 5", wrongs: ["12 - 5", "14 - 5", "13 - 6"], hint: "13 bớt 3 còn 10, 10 bớt tiếp 2 còn 8." },
-      { target: 18, correct: "9 + 9", wrongs: ["8 + 9", "9 + 8", "7 + 9"], hint: "Hai số 9 giống nhau cộng lại bằng 18." },
-      { target: 13, correct: "19 - 6", wrongs: ["18 - 6", "19 - 5", "17 - 5"], hint: "9 đơn vị trừ 6 đơn vị còn 3 đơn vị." },
-      { target: 16, correct: "7 + 9", wrongs: ["7 + 8", "6 + 9", "8 + 9"], hint: "9 thêm 1 là 10, 10 cộng thêm 6 là 16." },
-      { target: 7, correct: "16 - 9", wrongs: ["15 - 9", "16 - 8", "14 - 8"], hint: "16 trừ 6 còn 10, 10 trừ thêm 3 là 7." },
-      { target: 17, correct: "8 + 9", wrongs: ["7 + 9", "8 + 8", "9 + 9"], hint: "8 thêm 2 là 10, thêm 7 nữa là 17." },
-      { target: 6, correct: "14 - 8", wrongs: ["13 - 8", "15 - 8", "14 - 7"], hint: "14 bớt 4 còn 10, bớt tiếp 4 bằng 6." },
-      { target: 13, correct: "5 + 8", wrongs: ["5 + 7", "6 + 8", "4 + 8"], hint: "8 cộng 2 là 10, cộng thêm 3 bằng 13." },
-      { target: 5, correct: "12 - 7", wrongs: ["11 - 7", "13 - 7", "12 - 6"], hint: "12 bớt 2 còn 10, bớt tiếp 5 còn 5." },
-      { target: 20, correct: "12 + 8", wrongs: ["11 + 8", "13 + 8", "14 + 5"], hint: "2 cộng 8 tròn 1 chục, thêm 1 chục là 20." },
-      { target: 11, correct: "20 - 9", wrongs: ["20 - 8", "19 - 9", "18 - 8"], hint: "20 bớt 10 còn 10, vậy bớt 9 sẽ còn 11." },
-      { target: 14, correct: "9 + 5", wrongs: ["9 + 4", "8 + 5", "7 + 6"], hint: "9 thêm 1 là 10, thêm 4 nữa là 14." },
-      { target: 9, correct: "18 - 9", wrongs: ["17 - 9", "18 - 8", "16 - 8"], hint: "Số nào cộng với chính nó bằng 18?" },
-      { target: 16, correct: "8 + 8", wrongs: ["7 + 8", "9 + 8", "7 + 7"], hint: "Hai số 8 cộng lại bằng 16." },
-      { target: 10, correct: "17 - 7", wrongs: ["16 - 7", "18 - 7", "17 - 6"], hint: "17 bớt đi đúng 7 đơn vị còn tròn 10." }
-    ],
-    2: [ // Bảng nhân 2 đến 9
-      { target: 24, correct: "4 × 6", wrongs: ["3 × 7", "5 × 5", "4 × 5"], hint: "Bảng nhân 4 hoặc bảng nhân 6." },
-      { target: 45, correct: "5 × 9", wrongs: ["6 × 7", "5 × 8", "4 × 9"], hint: "Đuôi số 5 thuộc bảng nhân 5." },
-      { target: 56, correct: "7 × 8", wrongs: ["6 × 9", "7 × 7", "8 × 8"], hint: "7 nhân 8 bằng bao nhiêu nhỉ?" },
-      { target: 36, correct: "6 × 6", wrongs: ["5 × 7", "6 × 7", "4 × 8"], hint: "Hai số giống nhau nhân với nhau." },
-      { target: 63, correct: "9 × 7", wrongs: ["8 × 8", "9 × 6", "7 × 8"], hint: "Bảng nhân 9 hoặc bảng nhân 7." },
-      { target: 32, correct: "4 × 8", wrongs: ["5 × 6", "4 × 7", "3 × 9"], hint: "4 nhân 8 bằng 32." },
-      { target: 42, correct: "6 × 7", wrongs: ["6 × 6", "7 × 7", "5 × 8"], hint: "6 nhân 7 bằng 42." },
-      { target: 48, correct: "6 × 8", wrongs: ["7 × 7", "6 × 9", "5 × 9"], hint: "6 nhân 8 hoặc 8 nhân 6." },
-      { target: 72, correct: "8 × 9", wrongs: ["8 × 8", "7 × 9", "9 × 9"], hint: "8 nhân 9 bằng 72." },
-      { target: 27, correct: "3 × 9", wrongs: ["4 × 7", "3 × 8", "2 × 9"], hint: "3 nhân 9 bằng 27." },
-      { target: 18, correct: "2 × 9", wrongs: ["3 × 5", "4 × 4", "2 × 8"], hint: "Gấp đôi số 9." },
-      { target: 64, correct: "8 × 8", wrongs: ["7 × 9", "8 × 7", "6 × 9"], hint: "8 nhân 8 bằng 64." },
-      { target: 28, correct: "4 × 7", wrongs: ["3 × 9", "4 × 6", "5 × 6"], hint: "4 nhân 7 bằng 28." },
-      { target: 81, correct: "9 × 9", wrongs: ["8 × 9", "7 × 9", "8 × 8"], hint: "9 nhân 9 bằng 81." },
-      { target: 30, correct: "5 × 6", wrongs: ["4 × 7", "5 × 5", "6 × 6"], hint: "5 nhân 6 bằng 30." },
-      { target: 16, correct: "4 × 4", wrongs: ["3 × 5", "2 × 7", "4 × 5"], hint: "4 nhân 4 bằng 16." },
-      { target: 35, correct: "5 × 7", wrongs: ["6 × 6", "4 × 8", "5 × 8"], hint: "5 nhân 7 bằng 35." },
-      { target: 40, correct: "5 × 8", wrongs: ["6 × 7", "4 × 9", "5 × 9"], hint: "5 nhân 8 bằng 40." },
-      { target: 54, correct: "6 × 9", wrongs: ["7 × 8", "6 × 8", "5 × 9"], hint: "6 nhân 9 bằng 54." },
-      { target: 49, correct: "7 × 7", wrongs: ["6 × 8", "7 × 8", "6 × 7"], hint: "7 nhân 7 bằng 49." }
-    ],
-    3: [ // Bảng chia 2 đến 9
-      { target: 6, correct: "48 : 8", wrongs: ["42 : 7", "36 : 8", "54 : 8"], hint: "8 nhân 6 bằng 48." },
-      { target: 7, correct: "63 : 9", wrongs: ["54 : 9", "72 : 9", "56 : 7"], hint: "9 nhân 7 bằng 63." },
-      { target: 8, correct: "56 : 7", wrongs: ["48 : 7", "64 : 7", "49 : 7"], hint: "7 nhân 8 bằng 56." },
-      { target: 9, correct: "54 : 6", wrongs: ["48 : 6", "42 : 6", "60 : 6"], hint: "6 nhân 9 bằng 54." },
-      { target: 5, correct: "35 : 7", wrongs: ["40 : 7", "28 : 7", "30 : 7"], hint: "7 nhân 5 bằng 35." },
-      { target: 4, correct: "36 : 9", wrongs: ["27 : 9", "45 : 9", "32 : 9"], hint: "9 nhân 4 bằng 36." },
-      { target: 8, correct: "72 : 9", wrongs: ["63 : 9", "81 : 9", "54 : 9"], hint: "9 nhân 8 bằng 72." },
-      { target: 7, correct: "42 : 6", wrongs: ["36 : 6", "48 : 6", "35 : 6"], hint: "6 nhân 7 bằng 42." },
-      { target: 9, correct: "81 : 9", wrongs: ["72 : 9", "90 : 9", "64 : 8"], hint: "9 nhân 9 bằng 81." },
-      { target: 6, correct: "24 : 4", wrongs: ["28 : 4", "20 : 4", "16 : 4"], hint: "4 nhân 6 bằng 24." },
-      { target: 8, correct: "64 : 8", wrongs: ["56 : 8", "72 : 8", "48 : 8"], hint: "8 nhân 8 bằng 64." },
-      { target: 7, correct: "35 : 5", wrongs: ["30 : 5", "40 : 5", "25 : 5"], hint: "5 nhân 7 bằng 35." },
-      { target: 9, correct: "36 : 4", wrongs: ["32 : 4", "28 : 4", "24 : 4"], hint: "4 nhân 9 bằng 36." },
-      { target: 6, correct: "30 : 5", wrongs: ["25 : 5", "35 : 5", "20 : 5"], hint: "5 nhân 6 bằng 30." },
-      { target: 4, correct: "28 : 7", wrongs: ["21 : 7", "35 : 7", "14 : 7"], hint: "7 nhân 4 bằng 28." },
-      { target: 8, correct: "32 : 4", wrongs: ["28 : 4", "36 : 4", "24 : 4"], hint: "4 nhân 8 bằng 32." },
-      { target: 5, correct: "45 : 9", wrongs: ["36 : 9", "54 : 9", "40 : 9"], hint: "9 nhân 5 bằng 45." },
-      { target: 7, correct: "49 : 7", wrongs: ["42 : 7", "56 : 7", "35 : 7"], hint: "7 nhân 7 bằng 49." },
-      { target: 9, correct: "27 : 3", wrongs: ["24 : 3", "21 : 3", "18 : 3"], hint: "3 nhân 9 bằng 27." },
-      { target: 6, correct: "18 : 3", wrongs: ["15 : 3", "21 : 3", "12 : 3"], hint: "3 nhân 6 bằng 18." }
-    ]
-  };
-
-  // --- QUẢN LÝ ĐIỀU HƯỚNG MÀN HÌNH ---
-  function showPage(pageId) {
-    document.getElementById('page-home').classList.add('hidden');
-    document.getElementById('page-quiz').classList.add('hidden');
-    document.getElementById('page-result').classList.add('hidden');
-    document.getElementById(pageId).classList.remove('hidden');
-  }
-
-  // --- BIẾN TRẠNG THÁI BÀI HỌC ---
-  let activeTopic = 1;
-  let activeQuestions = [];
-  let curIndex = 0;
-  let curScore = 0;
-  let curLives = 3;
-
-  function openQuiz(topicId) {
-    activeTopic = topicId;
-    activeQuestions = [...database[topicId]].sort(() => Math.random() - 0.5);
-    curIndex = 0;
-    curScore = 0;
-    curLives = 3;
-
-    showPage('page-quiz');
-    updateStatus();
-    renderQuestion();
-  }
-
-  function retryCurrentQuiz() {
-    openQuiz(activeTopic);
-  }
-
-  function updateStatus() {
-    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${curScore}`;
-    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${curLives}`;
-    const percent = (curIndex / activeQuestions.length) * 100;
-    document.getElementById('bar-progress').style.width = `${percent}%`;
-  }
-
-  function renderQuestion() {
-    if (curIndex >= activeQuestions.length) {
-      finishQuiz(true);
-      return;
-    }
-
-    const q = activeQuestions[curIndex];
-    document.getElementById('lbl-target').innerText = q.target;
-    document.getElementById('lbl-hint').innerText = "Bé hãy suy nghĩ thật kỹ nhé!";
-
-    const container = document.getElementById('grid-answers');
-    container.innerHTML = "";
-
-    const shuffled = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
-    shuffled.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.className = 'opt-btn';
-      btn.innerText = opt;
-      btn.onclick = () => onSelect(btn, opt === q.correct);
-      container.appendChild(btn);
-    });
-  }
-
-  function onSelect(btn, isCorrect) {
-    const q = activeQuestions[curIndex];
-    if (isCorrect) {
-      playSound(true);
-      btn.classList.add('correct');
-      curScore += 10;
-      updateStatus();
-      Array.from(document.getElementsByClassName('opt-btn')).forEach(b => b.onclick = null);
-
-      setTimeout(() => {
-        curIndex++;
-        updateStatus();
-        renderQuestion();
-      }, 600);
-    } else {
-      playSound(false);
-      btn.classList.add('disabled');
-      btn.onclick = null;
-      curLives--;
-      updateStatus();
-      document.getElementById('lbl-hint').innerText = "💡 " + q.hint;
-
-      if (curLives <= 0) {
-        finishQuiz(false);
-      }
-    }
-  }
-
-  function finishQuiz(isWin) {
-    showPage('page-result');
-    const title = document.getElementById('lbl-res-title');
-    const detail = document.getElementById('lbl-res-detail');
-
-    if (isWin) {
-      title.innerText = "🎉 XUẤT SẮC! 🎉";
-      title.style.color = "#10b981";
-      detail.innerText = `Bé đã vượt qua toàn bộ 20 bài với ${curScore} điểm!`;
-    } else {
-      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪";
-      title.style.color = "#ef4444";
-      detail.innerText = `Bé đã hoàn thành ${curIndex}/20 bài và đạt ${curScore} điểm.`;
-    }
-  }
-</script>
 </body>
 </html>

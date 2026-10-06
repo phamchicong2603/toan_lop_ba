@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SGK Bài 4: Bảng nhân 2, 5 & Bảng chia 2, 5</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #bfdbfe 0%, #93c5fd 100%);
+      min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 12px;
+    }
+    .game-card {
+      background: white; border-radius: 24px; box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%; max-width: 480px; padding: 22px 18px; text-align: center;
+    }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .btn-back {
+      background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 6px 12px; font-size: 0.88rem; font-weight: bold; color: #475569; text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    .progress-track { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+    .progress-bar { height: 100%; width: 0%; background: #2563eb; transition: width 0.25s ease; }
+    .question-box {
+      background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 18px;
+      padding: 18px 14px; margin-bottom: 14px; text-align: left;
+    }
+    .q-type { font-size: 0.85rem; font-weight: 800; color: #1d4ed8; margin-bottom: 6px; }
+    .q-content { font-size: 1.15rem; line-height: 1.5; font-weight: 700; color: #1e293b; margin: 0; }
+    .hint-box {
+      min-height: 48px; font-size: 0.9rem; color: #1e40af; background: #dbeafe;
+      border-radius: 12px; padding: 8px 12px; margin-bottom: 16px; display: flex;
+      align-items: center; justify-content: center; text-align: left;
+    }
+    .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+    .btn-opt {
+      background: #2563eb; color: white; border: none; border-radius: 14px;
+      padding: 16px 8px; font-size: 1.15rem; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 0 #1e40af; transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #1e40af; }
+    .btn-opt.correct { background: #10b981 !important; box-shadow: 0 4px 0 #047857 !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <div id="quiz-section">
+    <div class="header-bar">
+      <a href="sgk_chude1.html" class="btn-back">⬅ Chọn bài khác</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track"><div class="progress-bar" id="bar-progress"></div></div>
+
+    <div class="question-box">
+      <div class="q-type" id="lbl-qtype">DẠNG TOÁN SGK</div>
+      <p class="q-content" id="lbl-qcontent"></p>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy nhẩm lại bảng nhân và chia 2, 5 nhé!</div>
+    <div class="answers-grid" id="grid-answers"></div>
+  </div>
+
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="sgk_chude1.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Chọn bài</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function generateLesson4Questions(total = 20) {
+    const list = [];
+    for (let i = 0; i < total; i++) {
+      const type = i % 4;
+      let qType, content, correct, hint;
+      const wrongs = new Set();
+
+      if (type === 0) {
+        // Bảng nhân, chia 2 (SGK Trang 14)
+        const isMul = Math.random() > 0.5;
+        const b = Math.floor(Math.random() * 9) + 2;
+        if (isMul) {
+          qType = "DẠNG 1: BẢNG NHÂN 2";
+          content = `Tính nhẩm: 2 × ${b} = ?`;
+          correct = `${2 * b}`;
+          hint = `Bảng nhân 2: 2 nhân ${b} bằng ${2 * b}.`;
+          wrongs.add(`${2 * b + 2}`); wrongs.add(`${2 * b - 2}`); wrongs.add(`${2 * (b - 1)}`);
+        } else {
+          qType = "DẠNG 1: BẢNG CHIA 2";
+          content = `Tính nhẩm: ${2 * b} : 2 = ?`;
+          correct = `${b}`;
+          hint = `2 nhân với ${b} bằng ${2 * b}, nên ${2 * b} : 2 = ${b}.`;
+          wrongs.add(`${b + 1}`); wrongs.add(`${b - 1}`); wrongs.add(`${b + 2}`);
+        }
+      }
+      else if (type === 1) {
+        // Bảng nhân, chia 5 (SGK Trang 15)
+        const isMul = Math.random() > 0.5;
+        const b = Math.floor(Math.random() * 9) + 2;
+        if (isMul) {
+          qType = "DẠNG 2: BẢNG NHÂN 5";
+          content = `Tính nhẩm: 5 × ${b} = ?`;
+          correct = `${5 * b}`;
+          hint = `Bảng nhân 5: 5 nhân ${b} bằng ${5 * b}.`;
+          wrongs.add(`${5 * b + 5}`); wrongs.add(`${5 * b - 5}`); wrongs.add(`${5 * (b + 1)}`);
+        } else {
+          qType = "DẠNG 2: BẢNG CHIA 5";
+          content = `Tính nhẩm: ${5 * b} : 5 = ?`;
+          correct = `${b}`;
+          hint = `5 nhân với ${b} bằng ${5 * b}, nên ${5 * b} : 5 = ${b}.`;
+          wrongs.add(`${b + 1}`); wrongs.add(`${b - 1}`); wrongs.add(`${b + 2}`);
+        }
+      }
+      else if (type === 2) {
+        // So sánh phép tính (SGK Trang 15 Bài 3)
+        const a = Math.floor(Math.random() * 8) + 2;
+        const mulRes = 5 * a;
+        qType = "DẠNG 3: SO SÁNH VÀ TÍNH TOÁN";
+        content = `Điền dấu thích hợp: 5 × ${a} ... ${mulRes - 5}`;
+        correct = ">";
+        hint = `Vì 5 × ${a} = ${mulRes}, mà ${mulRes} > ${mulRes - 5} nên điền dấu >.`;
+        wrongs.add("<"); wrongs.add("="); wrongs.add("+");
+      }
+      else {
+        // Bài toán thực tế (SGK Trang 14 Bài 4 & Trang 15 Bài 4)
+        const isBags = Math.random() > 0.5;
+        if (isBags) {
+          const kg = (Math.floor(Math.random() * 8) + 2) * 5;
+          qType = "DẠNG 4: TOÁN LỜI VĂN BẢNG CHIA 5";
+          content = `Có ${kg} kg gạo nếp chia đều vào 5 túi. Hỏi mỗi túi có bao nhiêu kg gạo?`;
+          correct = `${kg / 5} kg`;
+          hint = `Lấy tổng số gạo chia cho 5: ${kg} : 5 = ${kg / 5} kg.`;
+          wrongs.add(`${kg / 5 + 2} kg`); wrongs.add(`${kg / 5 - 1} kg`); wrongs.add(`${kg / 5 + 5} kg`);
+        } else {
+          const pairs = Math.floor(Math.random() * 6) + 4;
+          qType = "DẠNG 4: TOÁN LỜI VĂN BẢNG NHÂN 2";
+          content = `Có ${pairs} cặp đô vật tham gia thi đấu (mỗi cặp gồm 2 người). Hỏi có tất cả bao nhiêu đô vật?`;
+          correct = `${pairs * 2} người`;
+          hint = `Mỗi cặp có 2 người: ${pairs} × 2 = ${pairs * 2} người.`;
+          wrongs.add(`${pairs * 2 + 2} người`); wrongs.add(`${pairs * 2 - 2} người`); wrongs.add(`${pairs + 2} người`);
+        }
+      }
+
+      const finalWrongs = Array.from(wrongs).filter(w => w !== correct).slice(0, 3);
+      while (finalWrongs.length < 3) finalWrongs.push(`${Math.floor(Math.random() * 50) + 1}`);
+
+      list.push({ type: qType, content: content, correct: correct, wrongs: finalWrongs, hint: hint });
+    }
+    return list;
+  }
+
+  const questions = generateLesson4Questions(20);
+  let currentIndex = 0; let score = 0; let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    document.getElementById('bar-progress').style.width = `${(currentIndex / questions.length) * 100}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) { endGame(true); return; }
+    const q = questions[currentIndex];
+    document.getElementById('lbl-qtype').innerText = `${q.type} (CÂU ${currentIndex + 1}/20)`;
+    document.getElementById('lbl-qcontent').innerText = q.content;
+    document.getElementById('lbl-hint').innerText = "Bé hãy suy nghĩ kỹ nhé!";
+
+    const container = document.getElementById('grid-answers');
+    container.innerHTML = "";
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt'; btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct'); score += 10; updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+      setTimeout(() => { currentIndex++; updateStatus(); renderQuestion(); }, 550);
+    } else {
+      btn.classList.add('disabled'); btn.onclick = null; lives--; updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 Hướng dẫn: " + q.hint;
+      if (lives <= 0) endGame(false);
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉"; title.style.color = "#10b981";
+      msg.innerText = `Bé đã thành thạo toàn bộ Bài 4 với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪"; title.style.color = "#ef4444";
+      msg.innerText = `Bé đã vượt qua ${currentIndex}/${questions.length} câu với ${score} điểm.`;
+    }
+  }
+
+  updateStatus(); renderQuestion();
+</script>
+</body>
+</html>

@@ -5,326 +5,175 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>SGK Chủ đề 1: Ôn tập và bổ sung</title>
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
       margin: 0;
-      background: linear-gradient(180deg, #bfdbfe 0%, #60a5fa 100%);
+      background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 12px;
+      padding: 15px;
     }
-    .game-card {
+    .box {
       background: white;
       border-radius: 24px;
-      box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
       width: 100%;
       max-width: 480px;
       padding: 22px 18px;
       text-align: center;
     }
-    .header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .btn-home {
-      display: inline-block;
+    .top-nav { display: flex; justify-content: flex-start; margin-bottom: 12px; }
+    .btn-back {
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
       border-radius: 10px;
-      padding: 6px 12px;
-      font-size: 0.9rem;
+      padding: 6px 14px;
+      font-size: 0.88rem;
       font-weight: bold;
       color: #475569;
       text-decoration: none;
     }
-    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
-    .progress-track {
-      width: 100%;
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 99px;
-      overflow: hidden;
-      margin-bottom: 16px;
+    h1 { color: #1e3a8a; font-size: 1.5rem; margin: 4px 0 6px 0; }
+    p.sub { color: #64748b; font-size: 0.9rem; margin-bottom: 18px; }
+
+    .lesson-list { display: flex; flex-direction: column; gap: 10px; }
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.15s;
     }
-    .progress-bar {
-      height: 100%;
-      width: 0%;
+    .lesson-item:active { transform: scale(0.98); background: #eff6ff; }
+    .lesson-item.active { border-color: #2563eb; background: #eff6ff; }
+    .lesson-num {
+      width: 38px;
+      height: 38px;
       background: #2563eb;
-      transition: width 0.25s ease;
-    }
-    .question-box {
-      background: #eff6ff;
-      border: 2px dashed #3b82f6;
-      border-radius: 18px;
-      padding: 16px 14px;
-      margin-bottom: 14px;
-      text-align: left;
-    }
-    .q-number { font-size: 0.88rem; font-weight: 800; color: #1d4ed8; margin-bottom: 6px; }
-    .q-content { font-size: 1.05rem; line-height: 1.5; font-weight: 600; color: #1e293b; margin: 0; }
-    .hint-box {
-      min-height: 48px;
-      font-size: 0.9rem;
-      color: #1e40af;
-      background: #dbeafe;
-      border-radius: 12px;
-      padding: 8px 12px;
-      margin-bottom: 16px;
+      color: white;
+      font-weight: 800;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: left;
-    }
-    .answers-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-    .btn-opt {
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 14px;
-      padding: 14px 12px;
       font-size: 1.05rem;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 0 #1e40af;
-      transition: transform 0.05s;
+      flex-shrink: 0;
     }
-    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #1e40af; }
-    .btn-opt.correct { background: #10b981 !important; box-shadow: 0 4px 0 #047857 !important; }
-    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
-    .hidden { display: none !important; }
+    .lesson-num.locked { background: #94a3b8; }
+    .lesson-info { text-align: left; flex: 1; }
+    .lesson-info h3 { margin: 0 0 3px 0; font-size: 0.95rem; color: #0f172a; }
+    .lesson-info p { margin: 0; font-size: 0.8rem; color: #64748b; }
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
 
-<div class="game-card">
-  <div id="quiz-section">
-    <div class="header-bar">
-      <a href="index.html" class="btn-home">🏠 Trang chủ</a>
-      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
-      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
-    </div>
-
-    <div class="progress-track">
-      <div class="progress-bar" id="bar-progress"></div>
-    </div>
-
-    <div class="question-box">
-      <div class="q-number" id="lbl-qnum">BÀI TẬP SGK</div>
-      <p class="q-content" id="lbl-qcontent"></p>
-    </div>
-
-    <div class="hint-box" id="lbl-hint">Bé hãy quan sát và tính thật cẩn thận nhé!</div>
-    <div class="answers-list" id="answers-container"></div>
+<div class="box">
+  <div class="top-nav">
+    <a href="index.html" class="btn-back">⬅ Quay lại Trang chủ</a>
   </div>
 
-  <div id="end-section" class="hidden">
-    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
-    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
-    <div style="display: flex; gap: 12px;">
-      <a href="index.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Trang chủ</a>
-      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+  <h1>CHỦ ĐỀ 1: ÔN TẬP VÀ BỔ SUNG</h1>
+  <p class="sub">Bé đang học tới bài nào thì chọn bài đó nhé!</p>
+
+  <div class="lesson-list">
+    <!-- Bài 1: Đang mở luyện tập -->
+    <a href="sgk_bai1.html" class="lesson-item active">
+      <div class="lesson-num">1</div>
+      <div class="lesson-info">
+        <h3>Bài 1: Ôn tập các số đến 1.000</h3>
+        <p>Cấu tạo số, số liền trước/sau, so sánh số.</p>
+        <span class="badge">Luyện 20 câu • Tự sinh đề</span>
+      </div>
+    </a>
+
+    <!-- Bài 2 -->
+    <div class="lesson-item" style="opacity: 0.6;">
+      <div class="lesson-num locked">2</div>
+      <div class="lesson-info">
+        <h3>Bài 2: Cộng, trừ trong phạm vi 1.000</h3>
+        <p>Tính nhẩm, đặt tính có nhớ, giải toán có lời văn.</p>
+        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+      </div>
+    </div>
+
+    <!-- Bài 3 -->
+    <div class="lesson-item" style="opacity: 0.6;">
+      <div class="lesson-num locked">3</div>
+      <div class="lesson-info">
+        <h3>Bài 3: Tìm thành phần phép cộng, trừ</h3>
+        <p>Tìm số hạng, tìm số bị trừ, tìm số trừ.</p>
+        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+      </div>
+    </div>
+
+    <!-- Bài 4 -->
+    <div class="lesson-item" style="opacity: 0.6;">
+      <div class="lesson-num locked">4</div>
+      <div class="lesson-info">
+        <h3>Bài 4: Bảng nhân 2; 5, Bảng chia 2; 5</h3>
+        <p>Ôn tập thuộc lòng bảng nhân chia 2 và 5.</p>
+        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+      </div>
+    </div>
+
+    <!-- Bài 5 -->
+    <div class="lesson-item" style="opacity: 0.6;">
+      <div class="lesson-num locked">5</div>
+      <div class="lesson-info">
+        <h3>Bài 5: Bảng nhân 3, Bảng chia 3</h3>
+        <p>Học kiến thức mới bảng nhân 3 và chia 3.</p>
+        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+      </div>
+    </div>
+
+    <!-- Bài 6 -->
+    <div class="lesson-item" style="opacity: 0.6;">
+      <div class="lesson-num locked">6</div>
+      <div class="lesson-info">
+        <h3>Bài 6: Bảng nhân 4, Bảng chia 4</h3>
+        <p>Học kiến thức mới bảng nhân 4 và chia 4.</p>
+        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+      </div>
+    </div>
+
+    <!-- Bài 7 -->
+    <div class="lesson-item" style="opacity: 0.6;">
+      <div class="lesson-num locked">7</div>
+      <div class="lesson-info">
+        <h3>Bài 7: Ôn tập hình học và đo lường</h3>
+        <p>Đường gấp khúc, hình khối, xem đồng hồ, can lít.</p>
+        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+      </div>
+    </div>
+
+    <!-- Bài 8 -->
+    <div class="lesson-item" style="opacity: 0.6;">
+      <div class="lesson-num locked">8</div>
+      <div class="lesson-info">
+        <h3>Bài 8: Luyện tập chung</h3>
+        <p>Tính chất đặc biệt của số 0 và số 1 trong nhân/chia.</p>
+        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+      </div>
     </div>
   </div>
 </div>
 
-<script>
-  // Tuyển chọn 16 bài tập tiêu biểu từ SGK Toán 3 - Tập 1 (Chủ đề 1: Bài 1 đến Bài 8)
-  const sgkQuestions = [
-    {
-      source: "SGK Bài 1: Ôn tập các số đến 1.000 (Trang 6)",
-      content: "Số gồm 5 trăm, 0 chục và 4 đơn vị được viết là số nào?",
-      correct: "504",
-      wrongs: ["540", "5004", "405"],
-      hint: "Hàng trăm là 5, hàng chục là 0, hàng đơn vị là 4 -> Viết số 504."
-    },
-    {
-      source: "SGK Bài 1: Ôn tập các số đến 1.000 (Trang 7)",
-      content: "Số liền trước và số liền sau của số 426 lần lượt là:",
-      correct: "425 và 427",
-      wrongs: ["427 và 425", "424 và 427", "420 và 430"],
-      hint: "Bớt 1 được số liền trước: 426 - 1 = 425. Thêm 1 được số liền sau: 426 + 1 = 427."
-    },
-    {
-      source: "SGK Bài 1: Luyện tập (Trang 8)",
-      content: "Ba con lợn nặng 99 kg, 110 kg và 101 kg. Biết lợn trắng nặng nhất, lợn đen nhẹ hơn lợn khoang. Hỏi lợn đen nặng bao nhiêu kg?",
-      correct: "99 kg",
-      wrongs: ["101 kg", "110 kg", "100 kg"],
-      hint: "So sánh: 99 kg < 101 kg < 110 kg. Lợn trắng nặng nhất là 110 kg. Lợn đen nhẹ hơn lợn khoang nên lợn đen nhẹ nhất là 99 kg."
-    },
-    {
-      source: "SGK Bài 2: Phép cộng, trừ phạm vi 1.000 (Trang 9)",
-      content: "Con trâu cân nặng 650 kg, con nghé cân nặng 150 kg. Hỏi con trâu nặng hơn con nghé bao nhiêu ki-lô-gam?",
-      correct: "500 kg",
-      wrongs: ["800 kg", "450 kg", "550 kg"],
-      hint: "Lấy cân nặng con trâu trừ đi con nghé: 650 - 150 = 500 kg."
-    },
-    {
-      source: "SGK Bài 2: Luyện tập (Trang 10)",
-      content: "Khối lớp Ba có 142 học sinh, khối Bốn có ít hơn khối Ba 18 học sinh. Hỏi cả hai khối lớp có bao nhiêu học sinh?",
-      correct: "266 học sinh",
-      wrongs: ["124 học sinh", "284 học sinh", "302 học sinh"],
-      hint: "Bước 1: Khối Bốn có 142 - 18 = 124 bạn. Bước 2: Cả 2 khối có 142 + 124 = 266 bạn."
-    },
-    {
-      source: "SGK Bài 3: Thành phần phép tính (Trang 11)",
-      content: "Tìm số còn thiếu vào dấu chấm hỏi: ? + 20 = 35",
-      correct: "15",
-      wrongs: ["55", "10", "25"],
-      hint: "Muốn tìm một số hạng, ta lấy tổng trừ đi số hạng kia: 35 - 20 = 15."
-    },
-    {
-      source: "SGK Bài 3: Tìm số bị trừ, số trừ (Trang 13)",
-      content: "Biết số bị trừ là 52, hiệu là 28. Số trừ là bao nhiêu?",
-      correct: "24",
-      wrongs: ["80", "34", "14"],
-      hint: "Muốn tìm số trừ, ta lấy số bị trừ trừ đi hiệu: 52 - 28 = 24."
-    },
-    {
-      source: "SGK Bài 4: Bảng nhân 2, chia 2 (Trang 14)",
-      content: "Có 18 học sinh ngồi vào các bàn học, mỗi bàn 2 bạn. Hỏi có tất cả bao nhiêu bàn học?",
-      correct: "9 bàn",
-      wrongs: ["8 bàn", "36 bàn", "10 bàn"],
-      hint: "Lấy tổng số học sinh chia cho số bạn mỗi bàn: 18 : 2 = 9 bàn."
-    },
-    {
-      source: "SGK Bài 4: Bảng nhân 5, chia 5 (Trang 15)",
-      content: "Cửa hàng có 50 kg gạo nếp chia đều vào 5 túi. Hỏi mỗi túi có bao nhiêu ki-lô-gam gạo nếp?",
-      correct: "10 kg",
-      wrongs: ["5 kg", "25 kg", "15 kg"],
-      hint: "Lấy tổng số gạo chia cho 5 túi: 50 : 5 = 10 kg."
-    },
-    {
-      source: "SGK Bài 5: Bảng nhân 3, bảng chia 3 (Trang 17)",
-      content: "Mỗi bàn đấu cờ vua có 3 người (gồm trọng tài). Hỏi 6 bàn cờ như vậy có tất cả bao nhiêu người?",
-      correct: "18 người",
-      wrongs: ["15 người", "21 người", "9 người"],
-      hint: "Phép nhân: 3 × 6 = 18 người."
-    },
-    {
-      source: "SGK Bài 6: Bảng nhân 4, bảng chia 4 (Trang 20)",
-      content: "Có 24 chiếc bánh chia đều vào các hộp, mỗi hộp 4 chiếc. Hỏi được bao nhiêu hộp bánh?",
-      correct: "6 hộp",
-      wrongs: ["8 hộp", "5 hộp", "20 hộp"],
-      hint: "Phép chia: 24 : 4 = 6 hộp."
-    },
-    {
-      source: "SGK Bài 7: Ôn tập hình học (Trang 22)",
-      content: "Con ốc sên bò theo đường gấp khúc ABCD với AB = 125cm, BC = 380cm, CD = 300cm. Quãng đường ốc sên bò dài bao nhiêu?",
-      correct: "805 cm",
-      wrongs: ["705 cm", "800 cm", "605 cm"],
-      hint: "Cộng độ dài 3 đoạn thẳng: 125 + 380 + 300 = 805 cm."
-    },
-    {
-      source: "SGK Bài 7: Ôn tập đo lường (Trang 23)",
-      content: "Mỗi tuần gia đình cô Hoa ăn hết 5 kg gạo. Cô mua về 20 kg gạo. Hỏi gia đình ăn trong mấy tuần thì hết?",
-      correct: "4 tuần",
-      wrongs: ["5 tuần", "3 tuần", "15 tuần"],
-      hint: "Phép chia: 20 : 5 = 4 tuần."
-    },
-    {
-      source: "SGK Bài 8: Luyện tập chung (Trang 25)",
-      content: "Trường Quang Trung có 563 học sinh, trường Lê Lợi có nhiều hơn trường Quang Trung 29 học sinh. Hỏi trường Lê Lợi có bao nhiêu học sinh?",
-      correct: "592 học sinh",
-      wrongs: ["582 học sinh", "534 học sinh", "602 học sinh"],
-      hint: "Phép tính cộng: 563 + 29 = 592 học sinh."
-    },
-    {
-      source: "SGK Bài 8: Tính chất số 0 và 1 (Trang 26 - 27)",
-      content: "Kết quả của phép tính: (6 × 8 - 48) : 5 là bao nhiêu?",
-      correct: "0",
-      wrongs: ["1", "5", "48"],
-      hint: "Tính trong ngoặc trước: 6 × 8 = 48; 48 - 48 = 0. Số 0 chia cho số nào khác 0 cũng bằng 0."
-    },
-    {
-      source: "SGK Bài 8: Bài toán gấp khúc (Trang 27)",
-      content: "Đường gấp khúc ABCDE gồm 4 đoạn thẳng có cùng độ dài là 3 cm. Hỏi đường gấp khúc đó dài bao nhiêu cm?",
-      correct: "12 cm",
-      wrongs: ["9 cm", "15 cm", "7 cm"],
-      hint: "Lấy độ dài một đoạn nhân với 4: 3 × 4 = 12 cm."
-    }
-  ];
-
-  const questions = [...sgkQuestions].sort(() => Math.random() - 0.5);
-  let currentIndex = 0;
-  let score = 0;
-  let lives = 3;
-
-  function updateStatus() {
-    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
-    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
-    const percent = (currentIndex / questions.length) * 100;
-    document.getElementById('bar-progress').style.width = `${percent}%`;
-  }
-
-  function renderQuestion() {
-    if (currentIndex >= questions.length) {
-      endGame(true);
-      return;
-    }
-    const q = questions[currentIndex];
-    document.getElementById('lbl-qnum').innerText = `${q.source}`;
-    document.getElementById('lbl-qcontent').innerText = q.content;
-    document.getElementById('lbl-hint').innerText = "Bé hãy quan sát và tính thật cẩn thận nhé!";
-
-    const container = document.getElementById('answers-container');
-    container.innerHTML = "";
-
-    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
-    options.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.className = 'btn-opt';
-      btn.innerText = opt;
-      btn.onclick = () => checkAnswer(btn, opt === q.correct);
-      container.appendChild(btn);
-    });
-  }
-
-  function checkAnswer(btn, isCorrect) {
-    const q = questions[currentIndex];
-    if (isCorrect) {
-      btn.classList.add('correct');
-      score += 10;
-      updateStatus();
-      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
-
-      setTimeout(() => {
-        currentIndex++;
-        updateStatus();
-        renderQuestion();
-      }, 550);
-    } else {
-      btn.classList.add('disabled');
-      btn.onclick = null;
-      lives--;
-      updateStatus();
-      document.getElementById('lbl-hint').innerText = "💡 Gợi ý: " + q.hint;
-      if (lives <= 0) endGame(false);
-    }
-  }
-
-  function endGame(isWin) {
-    document.getElementById('quiz-section').classList.add('hidden');
-    document.getElementById('end-section').classList.remove('hidden');
-    const title = document.getElementById('lbl-end-title');
-    const msg = document.getElementById('lbl-end-msg');
-
-    if (isWin) {
-      title.innerText = "🎉 XUẤT SẮC! 🎉";
-      title.style.color = "#10b981";
-      msg.innerText = `Bé đã hoàn thành toàn bộ bài tập SGK Chủ đề 1 với ${score} điểm!`;
-    } else {
-      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪";
-      title.style.color = "#ef4444";
-      msg.innerText = `Bé đã vượt qua ${currentIndex}/${questions.length} câu hỏi với ${score} điểm.`;
-    }
-  }
-
-  updateStatus();
-  renderQuestion();
-</script>
 </body>
 </html>

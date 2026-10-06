@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SGK Bài 7: Ôn tập hình học & đo lường</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #bfdbfe 0%, #93c5fd 100%);
+      min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 12px;
+    }
+    .game-card {
+      background: white; border-radius: 24px; box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%; max-width: 480px; padding: 22px 18px; text-align: center;
+    }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .btn-back {
+      background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 6px 12px; font-size: 0.88rem; font-weight: bold; color: #475569; text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    .progress-track { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+    .progress-bar { height: 100%; width: 0%; background: #2563eb; transition: width 0.25s ease; }
+    .question-box {
+      background: #eff6ff; border: 2px dashed #3b82f6; border-radius: 18px;
+      padding: 18px 14px; margin-bottom: 14px; text-align: left;
+    }
+    .q-type { font-size: 0.85rem; font-weight: 800; color: #1d4ed8; margin-bottom: 6px; }
+    .q-content { font-size: 1.15rem; line-height: 1.5; font-weight: 700; color: #1e293b; margin: 0; }
+    .hint-box {
+      min-height: 48px; font-size: 0.9rem; color: #1e40af; background: #dbeafe;
+      border-radius: 12px; padding: 8px 12px; margin-bottom: 16px; display: flex;
+      align-items: center; justify-content: center; text-align: left;
+    }
+    .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+    .btn-opt {
+      background: #2563eb; color: white; border: none; border-radius: 14px;
+      padding: 16px 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 0 #1e40af; transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #1e40af; }
+    .btn-opt.correct { background: #10b981 !important; box-shadow: 0 4px 0 #047857 !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <div id="quiz-section">
+    <div class="header-bar">
+      <a href="sgk_chude1.html" class="btn-back">⬅ Chọn bài khác</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track"><div class="progress-bar" id="bar-progress"></div></div>
+
+    <div class="question-box">
+      <div class="q-type" id="lbl-qtype">DẠNG TOÁN SGK</div>
+      <p class="q-content" id="lbl-qcontent"></p>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy quan sát hình và đơn vị đo nhé!</div>
+    <div class="answers-grid" id="grid-answers"></div>
+  </div>
+
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="sgk_chude1.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Chọn bài</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function generateLesson7Questions(total = 20) {
+    const list = [];
+    for (let i = 0; i < total; i++) {
+      const type = i % 4;
+      let qType, content, correct, hint;
+      const wrongs = new Set();
+
+      if (type === 0) {
+        // Đường gấp khúc (SGK Trang 22 Bài 3)
+        const a = Math.floor(Math.random() * 150) + 100;
+        const b = Math.floor(Math.random() * 200) + 150;
+        const c = Math.floor(Math.random() * 200) + 150;
+        const totalLen = a + b + c;
+        qType = "DẠNG 1: ĐỘ DÀI ĐƯỜNG GẤP KHÚC";
+        content = `Đường gấp khúc ABCD có AB = ${a}cm, BC = ${b}cm, CD = ${c}cm. Tính độ dài đường gấp khúc?`;
+        correct = `${totalLen} cm`;
+        hint = `Cộng độ dài 3 đoạn thẳng: ${a} + ${b} + ${c} = ${totalLen} cm.`;
+        wrongs.add(`${totalLen + 10} cm`); wrongs.add(`${totalLen - 20} cm`); wrongs.add(`${totalLen + 100} cm`);
+      }
+      else if (type === 1) {
+        // Hình khối trong thực tế (SGK Trang 21 Bài 1)
+        const items = [
+          { name: "Khối ru-bích", shape: "Khối lập phương", hint: "Khối ru-bích có các mặt đều là hình vuông nên là khối lập phương." },
+          { name: "Quả địa cầu", shape: "Khối cầu", hint: "Quả địa cầu có dạng hình tròn vo trong không gian nên là khối cầu." },
+          { name: "Bể cá cảnh hình chữ nhật", shape: "Khối hộp chữ nhật", hint: "Bể cá có các mặt hình chữ nhật là khối hộp chữ nhật." },
+          { name: "Hộp sữa tươi", shape: "Khối hộp chữ nhật", hint: "Hộp sữa tươi là khối hộp chữ nhật." }
+        ];
+        const pick = items[Math.floor(Math.random() * items.length)];
+        qType = "DẠNG 2: NHẬN BIẾT HÌNH KHỐI";
+        content = `Đồ vật nào sau đây có dạng gì: "${pick.name}"?`;
+        correct = pick.shape;
+        hint = pick.hint;
+        wrongs.add("Khối trụ"); wrongs.add("Hình tam giác");
+        if (correct !== "Khối lập phương") wrongs.add("Khối lập phương");
+        if (correct !== "Khối hộp chữ nhật") wrongs.add("Khối hộp chữ nhật");
+        if (correct !== "Khối cầu") wrongs.add("Khối cầu");
+      }
+      else if (type === 2) {
+        // Xem giờ buổi chiều/tối (SGK Trang 23 Bài 4)
+        const hours = [
+          { name1: "2 giờ 15 phút chiều", name2: "14:15" },
+          { name1: "5 giờ 30 phút chiều", name2: "17:30" },
+          { name1: "7 giờ 15 phút tối", name2: "19:15" },
+          { name1: "9 giờ tối", name2: "21:00" }
+        ];
+        const h = hours[Math.floor(Math.random() * hours.length)];
+        qType = "DẠNG 3: ĐỒNG HỒ BUỔI CHIỀU / TỐI";
+        content = `Đồng hồ kim chỉ "${h.name1}" thì đồng hồ điện tử tương ứng chỉ mấy giờ?`;
+        correct = h.name2;
+        hint = `Cộng thêm 12 giờ vào buổi chiều/tối để đổi sang đồng hồ 24 giờ.`;
+        wrongs.add("15:30"); wrongs.add("20:15"); wrongs.add("18:45");
+      }
+      else {
+        // Đo lường can dầu / lít nước (SGK Trang 23 Bài 1b)
+        const canA = Math.floor(Math.random() * 10) + 10; // 10-19L
+        const canB = Math.floor(Math.random() * 5) + 3;   // 3-7L
+        qType = "DẠNG 4: ĐƠN VỊ ĐO DUNG TÍCH (LÍT)";
+        content = `Can thứ nhất có ${canA} lít dầu, can thứ hai có ${canB} lít dầu. Cả hai can có bao nhiêu lít dầu?`;
+        correct = `${canA + canB} l`;
+        hint = `Lấy số dầu hai can cộng lại: ${canA} + ${canB} = ${canA + canB} lít.`;
+        wrongs.add(`${canA + canB + 2} l`); wrongs.add(`${canA - canB} l`); wrongs.add(`${canA + canB + 10} l`);
+      }
+
+      const finalWrongs = Array.from(wrongs).filter(w => w !== correct).slice(0, 3);
+      while (finalWrongs.length < 3) finalWrongs.push("Đáp án khác");
+
+      list.push({ type: qType, content: content, correct: correct, wrongs: finalWrongs, hint: hint });
+    }
+    return list;
+  }
+
+  const questions = generateLesson7Questions(20);
+  let currentIndex = 0; let score = 0; let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    document.getElementById('bar-progress').style.width = `${(currentIndex / questions.length) * 100}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) { endGame(true); return; }
+    const q = questions[currentIndex];
+    document.getElementById('lbl-qtype').innerText = `${q.type} (CÂU ${currentIndex + 1}/20)`;
+    document.getElementById('lbl-qcontent').innerText = q.content;
+    document.getElementById('lbl-hint').innerText = "Bé hãy quan sát và suy nghĩ kỹ nhé!";
+
+    const container = document.getElementById('grid-answers');
+    container.innerHTML = "";
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt'; btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct'); score += 10; updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+      setTimeout(() => { currentIndex++; updateStatus(); renderQuestion(); }, 550);
+    } else {
+      btn.classList.add('disabled'); btn.onclick = null; lives--; updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 Hướng dẫn: " + q.hint;
+      if (lives <= 0) endGame(false);
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉"; title.style.color = "#10b981";
+      msg.innerText = `Bé đã thành thạo toàn bộ Bài 7 với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪"; title.style.color = "#ef4444";
+      msg.innerText = `Bé đã vượt qua ${currentIndex}/${questions.length} câu với ${score} điểm.`;
+    }
+  }
+
+  updateStatus(); renderQuestion();
+</script>
+</body>
+</html>

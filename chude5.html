@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Chủ đề 5: Tìm một phần mấy của một số</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #c7d2fe 0%, #a5b4fc 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+    .game-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 480px;
+      padding: 22px 18px;
+      text-align: center;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .btn-home {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #475569;
+      text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #4f46e5;
+      transition: width 0.25s ease;
+    }
+    .question-box {
+      background: #eef2ff;
+      border: 2px dashed #6366f1;
+      border-radius: 18px;
+      padding: 16px 14px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .q-number { font-size: 0.9rem; font-weight: 800; color: #4338ca; margin-bottom: 6px; }
+    .q-content { font-size: 1.05rem; line-height: 1.5; font-weight: 600; color: #1e293b; margin: 0; }
+    .hint-box {
+      min-height: 48px;
+      font-size: 0.9rem;
+      color: #3730a3;
+      background: #e0e7ff;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+    }
+    .answers-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+    .btn-opt {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 12px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #3730a3;
+      transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #3730a3; }
+    .btn-opt.correct { background: #10b981 !important; box-shadow: 0 4px 0 #047857 !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <div id="quiz-section">
+    <div class="header-bar">
+      <a href="index.html" class="btn-home">🏠 Trang chủ</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-bar" id="bar-progress"></div>
+    </div>
+
+    <div class="question-box">
+      <div class="q-number" id="lbl-qnum">BÀI TẬP 1</div>
+      <p class="q-content" id="lbl-qcontent"></p>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy nhẩm phép chia để tìm một phần nhé!</div>
+    <div class="answers-list" id="answers-container"></div>
+  </div>
+
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="index.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Trang chủ</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Chuyển thể từ các bài toán tìm một phần mấy của một số
+  const rawQuestions = [
+    {
+      content: "Dũng có 36 viên bi. Lộc có số bi bằng 1/3 số bi của Dũng. Hỏi Lộc có bao nhiêu viên bi?",
+      correct: "12 viên bi",
+      wrongs: ["18 viên bi", "9 viên bi", "10 viên bi"],
+      hint: "Muốn tìm 1/3 của 36, ta lấy 36 chia cho 3: 36 : 3 = 12 viên bi."
+    },
+    {
+      content: "Dũng có 36 viên bi, Lộc có số bi bằng 1/3 số bi của Dũng. Hỏi Lộc ít hơn Dũng bao nhiêu viên bi?",
+      correct: "24 viên bi",
+      wrongs: ["12 viên bi", "20 viên bi", "26 viên bi"],
+      hint: "Lộc có: 36 : 3 = 12 bi. Lộc ít hơn Dũng: 36 - 12 = 24 viên bi."
+    },
+    {
+      content: "Tấm vải xanh dài 27m, tấm vải đỏ dài bằng 1/3 tấm vải xanh. Hỏi cả hai tấm vải dài bao nhiêu mét?",
+      correct: "36m",
+      wrongs: ["30m", "9m", "40m"],
+      hint: "Vải đỏ dài: 27 : 3 = 9m. Cả hai tấm vải: 27 + 9 = 36m."
+    },
+    {
+      content: "An lấy ra 1/4 số bi trong hộp đỏ thì được 15 viên bi. Hỏi ban đầu trong hộp đỏ có bao nhiêu viên bi?",
+      correct: "60 viên bi",
+      wrongs: ["45 viên bi", "30 viên bi", "55 viên bi"],
+      hint: "Biết 1/4 số bi là 15, vậy cả hộp bi là: 15 × 4 = 60 viên bi."
+    },
+    {
+      content: "An lấy 1/4 số bi hộp đỏ được 6 bi, lấy 1/5 số bi hộp xanh được 4 bi. Hỏi cả hai hộp có tất cả bao nhiêu viên bi?",
+      correct: "44 viên bi",
+      wrongs: ["38 viên bi", "40 viên bi", "48 viên bi"],
+      hint: "Hộp đỏ: 6 × 4 = 24 bi. Hộp xanh: 4 × 5 = 20 bi. Tổng cộng: 24 + 20 = 44 viên bi."
+    },
+    {
+      content: "Có một bao gạo, nếu lấy ra 1/5 số gạo thì được 9kg. Hỏi nếu lấy 1/3 số gạo trong bao đó thì được bao nhiêu kg?",
+      correct: "15 kg",
+      wrongs: ["12 kg", "18 kg", "20 kg"],
+      hint: "Bao gạo nặng: 9 × 5 = 45kg. Nếu lấy 1/3 bao: 45 : 3 = 15kg."
+    },
+    {
+      content: "Thùng thứ nhất đựng số nước mắm bằng 1/3 thùng thứ hai. Thùng thứ hai có 33 lít. Hỏi thùng thứ hai nhiều hơn thùng thứ nhất bao nhiêu lít?",
+      correct: "22 lít",
+      wrongs: ["11 lít", "24 lít", "30 lít"],
+      hint: "Thùng 1 có: 33 : 3 = 11 lít. Thùng 2 nhiều hơn: 33 - 11 = 22 lít."
+    },
+    {
+      content: "Ngày thứ nhất bán 45kg đường và chỉ bằng 1/2 ngày thứ hai. Hỏi cả hai ngày bán được tất cả bao nhiêu kg đường?",
+      correct: "135 kg",
+      wrongs: ["90 kg", "120 kg", "140 kg"],
+      hint: "Ngày thứ hai gấp đôi ngày một: 45 × 2 = 90kg. Cả hai ngày: 45 + 90 = 135kg."
+    },
+    {
+      content: "Lan có 48 cái kẹo. Lan cho Hồng 1/4 số kẹo, rồi cho Huệ 1/3 số kẹo còn lại. Hỏi Huệ nhận được bao nhiêu cái kẹo?",
+      correct: "12 cái kẹo",
+      wrongs: ["16 cái kẹo", "9 cái kẹo", "10 cái kẹo"],
+      hint: "Cho Hồng: 48 : 4 = 12 kẹo. Còn lại: 48 - 12 = 36 kẹo. Cho Huệ: 36 : 3 = 12 cái kẹo."
+    },
+    {
+      content: "Đàn gà thứ nhất có 32 con. Đàn thứ hai sau khi bán 15 con thì còn lại bằng 1/4 đàn thứ nhất. Hỏi ban đầu đàn thứ hai có bao nhiêu con gà?",
+      correct: "23 con",
+      wrongs: ["8 con", "25 con", "27 con"],
+      hint: "Số gà còn lại: 32 : 4 = 8 con. Ban đầu đàn hai có: 8 + 15 = 23 con gà."
+    },
+    {
+      content: "Thùng 1 có 28 lít dầu, đổ thêm vào 14 lít thì số dầu thùng 2 bằng 1/6 thùng 1. Hỏi ban đầu thùng 1 gấp mấy lần thùng 2?",
+      correct: "4 lần",
+      wrongs: ["3 lần", "6 lần", "5 lần"],
+      hint: "Thùng 1 sau khi thêm: 28 + 14 = 42 lít. Thùng 2 có: 42 : 6 = 7 lít. Lúc đầu thùng 1 gấp: 28 : 7 = 4 lần."
+    },
+    {
+      content: "Bình có 42 viên bi, nếu Bình cho Dũng 6 bi thì số bi còn lại của Bình gấp 3 lần số bi của Dũng. Hỏi lúc đầu Dũng có mấy viên bi?",
+      correct: "6 viên bi",
+      wrongs: ["12 viên bi", "8 viên bi", "10 viên bi"],
+      hint: "Bình còn: 42 - 6 = 36 bi. Số bi của Dũng lúc đó: 36 : 3 = 12 bi. Ban đầu Dũng có: 12 - 6 = 6 viên bi."
+    },
+    {
+      content: "Hai bao gạo tổng cộng nặng 80kg, biết bao thứ nhất nặng gấp 4 lần bao thứ hai. Hỏi bao thứ hai nặng bao nhiêu kg?",
+      correct: "16 kg",
+      wrongs: ["20 kg", "15 kg", "64 kg"],
+      hint: "Tổng số phần bằng nhau: 4 + 1 = 5 phần. Bao thứ hai nặng: 80 : 5 = 16kg."
+    },
+    {
+      content: "Thùng thứ nhất nhiều hơn thùng thứ hai 32 lít dầu và gấp 3 lần thùng thứ hai. Hỏi thùng thứ hai chứa bao nhiêu lít dầu?",
+      correct: "16 lít",
+      wrongs: ["12 lít", "24 lít", "48 lít"],
+      hint: "Hiệu số phần: 3 - 1 = 2 phần tương ứng 32 lít. Thùng thứ hai chứa: 32 : 2 = 16 lít."
+    }
+  ];
+
+  const questions = [...rawQuestions].sort(() => Math.random() - 0.5);
+  let currentIndex = 0;
+  let score = 0;
+  let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    const percent = (currentIndex / questions.length) * 100;
+    document.getElementById('bar-progress').style.width = `${percent}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) {
+      endGame(true);
+      return;
+    }
+    const q = questions[currentIndex];
+    document.getElementById('lbl-qnum').innerText = `BÀI TẬP ${currentIndex + 1} / ${questions.length}`;
+    document.getElementById('lbl-qcontent').innerText = q.content;
+    document.getElementById('lbl-hint').innerText = "Bé hãy nhẩm phép chia để tìm một phần nhé!";
+
+    const container = document.getElementById('answers-container');
+    container.innerHTML = "";
+
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt';
+      btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct');
+      score += 10;
+      updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+
+      setTimeout(() => {
+        currentIndex++;
+        updateStatus();
+        renderQuestion();
+      }, 550);
+    } else {
+      btn.classList.add('disabled');
+      btn.onclick = null;
+      lives--;
+      updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 Hướng dẫn: " + q.hint;
+      if (lives <= 0) endGame(false);
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉";
+      title.style.color = "#10b981";
+      msg.innerText = `Bé đã giải thành công tất cả bài toán phân số với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪";
+      title.style.color = "#ef4444";
+      msg.innerText = `Bé đã vượt qua ${currentIndex}/${questions.length} bài toán với ${score} điểm.`;
+    }
+  }
+
+  updateStatus();
+  renderQuestion();
+</script>
+</body>
+</html>

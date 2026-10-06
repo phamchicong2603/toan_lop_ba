@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>SGK Chủ đề 1: Ôn tập và bổ sung</title>
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
       margin: 0;
       background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
@@ -24,24 +24,12 @@
       padding: 22px 18px;
       text-align: center;
     }
-    .top-nav {
-      display: flex;
-      justify-content: flex-start;
-      margin-bottom: 14px;
-    }
+    .top-nav { display: flex; justify-content: flex-start; margin-bottom: 14px; }
     .btn-home {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      padding: 8px 14px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #334155;
-      text-decoration: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px;
+      padding: 8px 14px; font-size: 0.95rem; font-weight: 700; color: #334155;
+      text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .btn-home:active { transform: scale(0.96); background: #e2e8f0; }
 
@@ -50,65 +38,40 @@
 
     .lesson-list { display: flex; flex-direction: column; gap: 11px; }
     .lesson-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      background: #f8fafc;
-      border: 2px solid #e2e8f0;
-      border-radius: 16px;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.15s;
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      background: #f8fafc; border: 2px solid #2563eb; border-radius: 16px;
+      text-decoration: none; color: inherit; transition: all 0.15s;
     }
     .lesson-item:active { transform: scale(0.98); background: #eff6ff; }
-    .lesson-item.active { border-color: #2563eb; background: #f0f7ff; }
 
     .lesson-num {
-      width: 40px;
-      height: 40px;
-      background: #2563eb;
-      color: white;
-      font-weight: 800;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-      box-shadow: 0 3px 6px rgba(37,99,235,0.25);
+      width: 40px; height: 40px; background: #2563eb; color: white;
+      font-weight: 800; border-radius: 12px; display: flex;
+      align-items: center; justify-content: center; font-size: 1.1rem;
+      flex-shrink: 0; box-shadow: 0 3px 6px rgba(37,99,235,0.25);
     }
-    .lesson-num.locked { background: #94a3b8; box-shadow: none; }
-
     .lesson-info { text-align: left; flex: 1; }
     .lesson-info h3 { margin: 0 0 3px 0; font-size: 0.98rem; color: #0f172a; font-weight: 700; }
     .lesson-info p { margin: 0; font-size: 0.82rem; color: #64748b; }
     .badge {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: bold;
-      padding: 2px 7px;
-      border-radius: 6px;
-      background: #dbeafe;
-      color: #1d4ed8;
-      margin-top: 4px;
+      display: inline-block; font-size: 0.72rem; font-weight: bold;
+      padding: 2px 7px; border-radius: 6px; background: #dbeafe;
+      color: #1d4ed8; margin-top: 4px;
     }
   </style>
 </head>
 <body>
 
 <div class="box">
-  <!-- NÚT QUAY VỀ TRANG CHỦ -->
   <div class="top-nav">
     <a href="index.html" class="btn-home">🏠 Quay về Trang chủ</a>
   </div>
 
   <h1>CHỦ ĐỀ 1: ÔN TẬP VÀ BỔ SUNG</h1>
-  <p class="sub">Bé chọn đúng bài học trên lớp để luyện tập nhé!</p>
+  <p class="sub">Toàn bộ 8 bài học bám sát SGK Toán 3 Kết Nối Tri Thức</p>
 
   <div class="lesson-list">
-    <!-- Bài 1: Chuyển sang sgk_bai1.html -->
-    <a href="sgk_bai1.html" class="lesson-item active">
+    <a href="sgk_bai1.html" class="lesson-item">
       <div class="lesson-num">1</div>
       <div class="lesson-info">
         <h3>Bài 1: Ôn tập các số đến 1.000</h3>
@@ -117,75 +80,68 @@
       </div>
     </a>
 
-    <!-- Bài 2: Chuyển sang sgk_bai2.html -->
-    <a href="sgk_bai2.html" class="lesson-item active">
+    <a href="sgk_bai2.html" class="lesson-item">
       <div class="lesson-num">2</div>
       <div class="lesson-info">
         <h3>Bài 2: Cộng, trừ trong phạm vi 1.000</h3>
-        <p>Cộng trừ tròn trăm, đặt tính có nhớ, toán có lời văn.</p>
+        <p>Cộng trừ tròn trăm, đặt tính có nhớ, toán thực tế.</p>
         <span class="badge">20 câu • Tự sinh đề</span>
       </div>
     </a>
 
-    <!-- Bài 3: Chuyển sang sgk_bai3.html -->
-    <a href="sgk_bai3.html" class="lesson-item active">
+    <a href="sgk_bai3.html" class="lesson-item">
       <div class="lesson-num">3</div>
       <div class="lesson-info">
         <h3>Bài 3: Tìm thành phần phép cộng, trừ</h3>
-        <p>Quy tắc tìm số hạng, số bị trừ, số trừ.</p>
+        <p>Tìm số hạng, số bị trừ, số trừ.</p>
         <span class="badge">20 câu • Tự sinh đề</span>
       </div>
     </a>
 
-    <!-- Bài 4: Khung dự phòng các bài tiếp theo -->
-    <div class="lesson-item" style="opacity: 0.55; cursor: not-allowed;">
-      <div class="lesson-num locked">4</div>
+    <a href="sgk_bai4.html" class="lesson-item">
+      <div class="lesson-num">4</div>
       <div class="lesson-info">
-        <h3>Bài 4: Bảng nhân 2; 5, Bảng chia 2; 5</h3>
-        <p>Ôn tập thuộc lòng bảng nhân chia 2 và 5.</p>
-        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+        <h3>Bài 4: Bảng nhân 2, 5; Bảng chia 2, 5</h3>
+        <p>Ôn tập tích, thương, chia đôi, đếm thêm 2 và 5.</p>
+        <span class="badge">20 câu • Tự sinh đề</span>
       </div>
-    </div>
+    </a>
 
-    <!-- Bài 5 -->
-    <div class="lesson-item" style="opacity: 0.55; cursor: not-allowed;">
-      <div class="lesson-num locked">5</div>
+    <a href="sgk_bai5.html" class="lesson-item">
+      <div class="lesson-num">5</div>
       <div class="lesson-info">
         <h3>Bài 5: Bảng nhân 3, Bảng chia 3</h3>
-        <p>Học kiến thức bảng nhân 3 và chia 3.</p>
-        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+        <p>Hình thành phép nhân 3, chia 3, bài toán bàn cờ.</p>
+        <span class="badge">20 câu • Tự sinh đề</span>
       </div>
-    </div>
+    </a>
 
-    <!-- Bài 6 -->
-    <div class="lesson-item" style="opacity: 0.55; cursor: not-allowed;">
-      <div class="lesson-num locked">6</div>
+    <a href="sgk_bai6.html" class="lesson-item">
+      <div class="lesson-num">6</div>
       <div class="lesson-info">
         <h3>Bài 6: Bảng nhân 4, Bảng chia 4</h3>
-        <p>Học kiến thức bảng nhân 4 và chia 4.</p>
-        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+        <p>Cánh chong chóng, bánh xe ô tô, chia bánh hộp 4.</p>
+        <span class="badge">20 câu • Tự sinh đề</span>
       </div>
-    </div>
+    </a>
 
-    <!-- Bài 7 -->
-    <div class="lesson-item" style="opacity: 0.55; cursor: not-allowed;">
-      <div class="lesson-num locked">7</div>
+    <a href="sgk_bai7.html" class="lesson-item">
+      <div class="lesson-num">7</div>
       <div class="lesson-info">
         <h3>Bài 7: Ôn tập hình học và đo lường</h3>
-        <p>Đường gấp khúc, hình khối, xem đồng hồ, can lít.</p>
-        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+        <p>Đường gấp khúc, hình tứ giác, xem giờ, cân nặng.</p>
+        <span class="badge">20 câu • Tự sinh đề</span>
       </div>
-    </div>
+    </a>
 
-    <!-- Bài 8 -->
-    <div class="lesson-item" style="opacity: 0.55; cursor: not-allowed;">
-      <div class="lesson-num locked">8</div>
+    <a href="sgk_bai8.html" class="lesson-item">
+      <div class="lesson-num">8</div>
       <div class="lesson-info">
         <h3>Bài 8: Luyện tập chung</h3>
-        <p>Tính chất đặc biệt của số 0 và số 1 trong phép nhân/chia.</p>
-        <span class="badge" style="background: #f1f5f9; color: #64748b;">Sắp mở</span>
+        <p>Nhân/chia với 1 và 0, biểu thức tính nhẩm, tổng hợp.</p>
+        <span class="badge">20 câu • Tự sinh đề</span>
       </div>
-    </div>
+    </a>
   </div>
 </div>
 

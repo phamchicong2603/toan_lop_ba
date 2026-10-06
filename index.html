@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#4A90E2">
+  <title>Biệt Đội Toán Lớp 3</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #bbf2f6 0%, #86e3ce 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    #game-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 420px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .question-box {
+      background: #f0f7ff;
+      border: 3px dashed #4a90e2;
+      border-radius: 18px;
+      padding: 20px 10px;
+      margin-bottom: 15px;
+    }
+    .title-prompt { font-size: 1rem; color: #555; margin-bottom: 6px; }
+    .target-number { font-size: 3.2rem; font-weight: 800; color: #e67e22; margin: 0; }
+    .hint-text {
+      min-height: 48px;
+      font-size: 0.95rem;
+      color: #d35400;
+      background: #fff3cd;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .grid-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    .btn-opt {
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 18px 10px;
+      font-size: 1.35rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #2c66a8;
+      transition: all 0.1s;
+    }
+    .btn-opt:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #2c66a8;
+    }
+    .btn-opt.disabled {
+      background: #bdc3c7;
+      box-shadow: 0 4px 0 #95a5a6;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .btn-opt.correct {
+      background: #2ecc71 !important;
+      box-shadow: 0 5px 0 #27ae60 !important;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div id="game-card">
+  <div class="status-bar">
+    <span id="score-display">⭐ Điểm: 0</span>
+    <span id="lives-display">❤️️ Lượt: 3</span>
+  </div>
+
+  <div id="quiz-area">
+    <div class="question-box">
+      <div class="title-prompt">Tìm phép tính có kết quả là:</div>
+      <h1 class="target-number" id="target-num">24</h1>
+    </div>
+
+    <div class="hint-text" id="hint-box">Gợi ý sẽ xuất hiện khi con cần trợ giúp!</div>
+
+    <div class="grid-options" id="options-container">
+      <!-- 4 nút phương án tự động sinh ra tại đây -->
+    </div>
+  </div>
+
+  <div id="game-over-area" class="hidden">
+    <h2 id="end-message" style="color: #2c3e50;">Hoàn thành xuất sắc!</h2>
+    <p id="final-score" style="font-size: 1.2rem;"></p>
+    <button class="btn-opt" style="width: 100%;" onclick="restartGame()">Chơi Lại Ván Mới</button>
+  </div>
+</div>
+
+<script>
+  // Dữ liệu ngân hàng câu hỏi (Dễ dàng sửa đổi hoặc cập nhật thêm bài mới ở đây)
+  const questionBank = [
+    {
+      target: 24,
+      correct: "4 × 6",
+      wrongs: ["3 × 7", "5 × 5", "4 × 5"],
+      hint: "Bé nhớ lại bảng nhân 4 hoặc bảng nhân 6 nhé!"
+    },
+    {
+      target: 35,
+      correct: "5 × 7",
+      wrongs: ["6 × 6", "5 × 8", "4 × 9"],
+      hint: "Số tận cùng là 5, chắc chắn thuộc bảng nhân 5!"
+    },
+    {
+      target: 450,
+      correct: "210 + 240",
+      wrongs: ["200 + 260", "310 + 150", "220 + 220"],
+      hint: "Hãy thử nhẩm cộng hàng chục: 10 + 40 = 50."
+    },
+    {
+      target: 8,
+      correct: "56 : 7",
+      wrongs: ["48 : 6", "54 : 6", "63 : 9"],
+      hint: "Gợi ý: 7 nhân với mấy thì bằng 56?"
+    },
+    {
+      target: 72,
+      correct: "8 × 9",
+      wrongs: ["8 × 8", "7 × 9", "9 × 9"],
+      hint: "Bảng nhân 8 hoặc bảng nhân 9 quen thuộc đấy!"
+    }
+  ];
+
+  let currentList = [];
+  let currentIndex = 0;
+  let score = 0;
+  let lives = 3;
+
+  function initGame() {
+    currentList = [...questionBank].sort(() => Math.random() - 0.5);
+    currentIndex = 0;
+    score = 0;
+    lives = 3;
+    document.getElementById("quiz-area").classList.remove("hidden");
+    document.getElementById("game-over-area").classList.add("hidden");
+    updateUI();
+    loadQuestion();
+  }
+
+  function updateUI() {
+    document.getElementById("score-display").innerText = `⭐ Điểm: ${score}`;
+    document.getElementById("lives-display").innerText = `❤️ Lượt: ${lives}`;
+  }
+
+  function loadQuestion() {
+    if (currentIndex >= currentList.length) {
+      endGame(true);
+      return;
+    }
+
+    const q = currentList[currentIndex];
+    document.getElementById("target-num").innerText = q.target;
+    document.getElementById("hint-box").innerText = "Con hãy suy nghĩ thật kỹ nhé!";
+
+    const container = document.getElementById("options-container");
+    container.innerHTML = "";
+
+    const allOptions = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+
+    allOptions.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "btn-opt";
+      btn.innerText = opt;
+      btn.onclick = () => handleChoice(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function handleChoice(btn, isCorrect) {
+    const q = currentList[currentIndex];
+    if (isCorrect) {
+      btn.classList.add("correct");
+      score += 10;
+      updateUI();
+      // Khóa tất cả nút khác
+      Array.from(document.getElementsByClassName("btn-opt")).forEach(b => b.onclick = null);
+      setTimeout(() => {
+        currentIndex++;
+        loadQuestion();
+      }, 700);
+    } else {
+      btn.classList.add("disabled");
+      btn.onclick = null;
+      lives--;
+      updateUI();
+      document.getElementById("hint-box").innerText = "💡 " + q.hint;
+
+      if (lives <= 0) {
+        endGame(false);
+      }
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById("quiz-area").classList.add("hidden");
+    document.getElementById("game-over-area").classList.remove("hidden");
+    const title = document.getElementById("end-message");
+    const finalScore = document.getElementById("final-score");
+
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉";
+      title.style.color = "#27ae60";
+      finalScore.innerText = `Bé đã vượt qua tất cả câu hỏi với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪";
+      title.style.color = "#e74c3c";
+      finalScore.innerText = `Bé đạt được: ${score} điểm.`;
+    }
+  }
+
+  function restartGame() {
+    initGame();
+  }
+
+  window.onload = initGame;
+</script>
+</body>
+</html>

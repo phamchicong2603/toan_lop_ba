@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>SGK Bài 19: Hình tam giác, tứ giác, chữ nhật, vuông</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0; background: linear-gradient(180deg, #bae6fd 0%, #7dd3fc 100%);
+      min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 12px;
+    }
+    .game-card {
+      background: white; border-radius: 24px; box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%; max-width: 480px; padding: 22px 18px; text-align: center;
+    }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .btn-back {
+      background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 6px 12px; font-size: 0.88rem; font-weight: bold; color: #475569; text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    .progress-track { width: 100%; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+    .progress-bar { height: 100%; width: 0%; background: #0284c7; transition: width 0.25s ease; }
+    .question-box {
+      background: #f0f9ff; border: 2px dashed #0284c7; border-radius: 18px;
+      padding: 18px 14px; margin-bottom: 14px; text-align: left;
+    }
+    .q-type { font-size: 0.85rem; font-weight: 800; color: #0369a1; margin-bottom: 6px; }
+    .q-content { font-size: 1.15rem; line-height: 1.5; font-weight: 700; color: #1e293b; margin: 0; }
+    .hint-box {
+      min-height: 48px; font-size: 0.9rem; color: #075985; background: #e0f2fe;
+      border-radius: 12px; padding: 8px 12px; margin-bottom: 16px; display: flex;
+      align-items: center; justify-content: center; text-align: left;
+    }
+    .answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+    .btn-opt {
+      background: #0284c7; color: white; border: none; border-radius: 14px;
+      padding: 16px 8px; font-size: 1.12rem; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 0 #0369a1; transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #0369a1; }
+    .btn-opt.correct { background: #16a34a !important; box-shadow: 0 4px 0 #15803d !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+  <div id="quiz-section">
+    <div class="header-bar">
+      <a href="sgk_chude3.html" class="btn-back">⬅ Chọn bài khác</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track"><div class="progress-bar" id="bar-progress"></div></div>
+
+    <div class="question-box">
+      <div class="q-type" id="lbl-qtype">DẠNG TOÁN SGK</div>
+      <p class="q-content" id="lbl-qcontent"></p>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy quan sát số đỉnh, số cạnh và các góc vuông nhé!</div>
+    <div class="answers-grid" id="grid-answers"></div>
+  </div>
+
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="sgk_chude3.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Chọn bài</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function generateLesson19Questions(total = 20) {
+    const list = [];
+    for (let i = 0; i < total; i++) {
+      const type = i % 4;
+      let qType, content, correct, hint;
+      const wrongs = new Set();
+
+      if (type === 0) {
+        // Đặc điểm hình tam giác và hình tứ giác (SGK Trang 56)
+        const isTri = Math.random() > 0.5;
+        if (isTri) {
+          qType = "DẠNG 1: ĐẶC ĐIỂM HÌNH TAM GIÁC";
+          content = "Một hình tam giác có bao nhiêu đỉnh, bao nhiêu cạnh và bao nhiêu góc?";
+          correct = "3 đỉnh, 3 cạnh, 3 góc";
+          hint = "Hình tam giác có đúng 3 đỉnh, 3 cạnh và 3 góc.";
+          wrongs.add("4 đỉnh, 4 cạnh, 4 góc"); wrongs.add("3 đỉnh, 4 cạnh, 3 góc"); wrongs.add("2 đỉnh, 3 cạnh, 2 góc");
+        } else {
+          qType = "DẠNG 1: ĐẶC ĐIỂM HÌNH TỨ GIÁC";
+          content = "Một hình tứ giác có bao nhiêu đỉnh, bao nhiêu cạnh và bao nhiêu góc?";
+          correct = "4 đỉnh, 4 cạnh, 4 góc";
+          hint = "Hình tứ giác có đúng 4 đỉnh, 4 cạnh và 4 góc.";
+          wrongs.add("3 đỉnh, 3 cạnh, 3 góc"); wrongs.add("4 đỉnh, 3 cạnh, 4 góc"); wrongs.add("5 đỉnh, 5 cạnh, 5 góc");
+        }
+      }
+      else if (type === 1) {
+        // Đặc điểm hình chữ nhật và hình vuông (SGK Trang 58)
+        const isSquare = Math.random() > 0.5;
+        if (isSquare) {
+          qType = "DẠNG 2: ĐẶC ĐIỂM HÌNH VUÔNG";
+          content = "Hình vuông có đặc điểm nào dưới đây?";
+          correct = "4 góc vuông và 4 cạnh bằng nhau";
+          hint = "Hình vuông có 4 góc vuông và cả 4 cạnh đều có độ dài bằng nhau.";
+          wrongs.add("2 cạnh dài bằng nhau, 2 cạnh ngắn bằng nhau");
+          wrongs.add("3 góc vuông và 4 cạnh bằng nhau");
+          wrongs.add("Không có góc vuông nào");
+        } else {
+          qType = "DẠNG 2: ĐẶC ĐIỂM HÌNH CHỮ NHẬT";
+          content = "Hình chữ nhật có đặc điểm nào dưới đây?";
+          correct = "4 góc vuông, 2 cạnh dài bằng nhau, 2 cạnh ngắn bằng nhau";
+          hint = "Hình chữ nhật có 4 góc vuông, 2 chiều dài bằng nhau và 2 chiều rộng bằng nhau.";
+          wrongs.add("4 cạnh đều bằng nhau");
+          wrongs.add("Chỉ có 2 góc vuông");
+          wrongs.add("Có 3 cạnh bằng nhau");
+        }
+      }
+      else if (type === 2) {
+        // Cạnh đối diện hình chữ nhật - Nhà Dế mèn / Châu chấu (SGK Trang 60 Bài 1)
+        const w = Math.floor(Math.random() * 8) + 12; // chiều rộng 12-19 dm
+        const l = w + Math.floor(Math.random() * 6) + 4; // chiều dài
+        qType = "DẠNG 3: ĐỘ DÀI CẠNH HÌNH CHỮ NHẬT";
+        content = `Hình chữ nhật ABCD có chiều rộng BC = ${w} dm, chiều dài CD = ${l} dm. Độ dài cạnh đối diện AB là:`;
+        correct = `${l} dm`;
+        hint = `Trong hình chữ nhật, hai cạnh dài đối diện có độ dài bằng nhau: AB = CD = ${l} dm.`;
+        wrongs.add(`${w} dm`); wrongs.add(`${l + w} dm`); wrongs.add(`${l - 2} dm`);
+      }
+      else {
+        // Xếp que tính thành hình chữ nhật (SGK Trang 60 Bài 3)
+        const stickOptions = [
+          { q: "Với 6 que tính bằng nhau, ta có thể xếp được hình chữ nhật có kích thước:", a: "Dài 2 que, rộng 1 que", w: ["Dài 3 que, rộng 2 que", "Dài 1 que, rộng 1 que", "Không xếp được"], h: "Chu vi = (2 + 1) × 2 = 6 que tính." },
+          { q: "Muốn dùng các que tính bằng nhau xếp thành 1 hình vuông thì số que tính ít nhất là:", a: "4 que tính", w: ["3 que tính", "6 que tính", "5 que tính"], h: "Hình vuông có 4 cạnh bằng nhau nên cần ít nhất 4 que tính." }
+        ];
+        const p = stickOptions[Math.floor(Math.random() * stickOptions.length)];
+        qType = "DẠNG 4: TOÁN ĐỐ XẾP QUE TÍNH";
+        content = p.q;
+        correct = p.a;
+        hint = p.h;
+        p.w.forEach(item => wrongs.add(item));
+      }
+
+      const finalWrongs = Array.from(wrongs).filter(w => w !== correct).slice(0, 3);
+      while (finalWrongs.length < 3) finalWrongs.push("Đáp án khác");
+
+      list.push({ type: qType, content: content, correct: correct, wrongs: finalWrongs, hint: hint });
+    }
+    return list;
+  }
+
+  const questions = generateLesson19Questions(20);
+  let currentIndex = 0; let score = 0; let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    document.getElementById('bar-progress').style.width = `${(currentIndex / questions.length) * 100}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) { endGame(true); return; }
+    const q = questions[currentIndex];
+    document.getElementById('lbl-qtype').innerText = `${q.type} (CÂU ${currentIndex + 1}/20)`;
+    document.getElementById('lbl-qcontent').innerText = q.content;
+    document.getElementById('lbl-hint').innerText = "Bé hãy suy nghĩ kỹ nhé!";
+
+    const container = document.getElementById('grid-answers');
+    container.innerHTML = "";
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt'; btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct'); score += 10; updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+      setTimeout(() => { currentIndex++; updateStatus(); renderQuestion(); }, 550);
+    } else {
+      btn.classList.add('disabled'); btn.onclick = null; lives--; updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 Hướng dẫn: " + q.hint;
+      if (lives <= 0) endGame(false);
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉"; title.style.color = "#0284c7";
+      msg.innerText = `Bé đã làm đúng tất cả 20 câu Bài 19 với ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪"; title.style.color = "#ef4444";
+      msg.innerText = `Bé đã vượt qua ${currentIndex}/${questions.length} câu với ${score} điểm.`;
+    }
+  }
+
+  updateStatus(); renderQuestion();
+</script>
+</body>
+</html>

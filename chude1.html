@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Chủ đề 1: Cộng Trừ Phạm Vi 20</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #bbf2f6 0%, #86e3ce 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    .game-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 420px;
+      padding: 22px 18px;
+      text-align: center;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .btn-home {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #475569;
+      text-decoration: none;
+    }
+    .stat-text { font-size: 1rem; font-weight: bold; color: #1e293b; }
+    
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #10b981;
+      transition: width 0.25s ease;
+    }
+
+    .question-box {
+      background: #f0f7ff;
+      border: 2px dashed #3b82f6;
+      border-radius: 18px;
+      padding: 18px 10px;
+      margin-bottom: 12px;
+    }
+    .prompt { font-size: 0.95rem; color: #64748b; margin-bottom: 4px; }
+    .target { font-size: 3rem; font-weight: 800; color: #ea580c; margin: 0; }
+
+    .hint-box {
+      min-height: 44px;
+      font-size: 0.9rem;
+      color: #b45309;
+      background: #fef3c7;
+      border-radius: 10px;
+      padding: 6px 10px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .btn-opt {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #1d4ed8;
+      transition: transform 0.05s;
+    }
+    .btn-opt:active { transform: translateY(3px); box-shadow: 0 1px 0 #1d4ed8; }
+    .btn-opt.correct { background: #10b981 !important; box-shadow: 0 4px 0 #047857 !important; }
+    .btn-opt.disabled { background: #cbd5e1 !important; box-shadow: 0 4px 0 #94a3b8 !important; opacity: 0.6; cursor: not-allowed; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="game-card">
+
+  <!-- VÙNG CHƠI GAME -->
+  <div id="quiz-section">
+    <div class="header-bar">
+      <!-- Dùng thẻ liên kết a quay thẳng về index.html -->
+      <a href="index.html" class="btn-home">🏠 Trang chủ</a>
+      <span class="stat-text" id="lbl-score">⭐ Điểm: 0</span>
+      <span class="stat-text" id="lbl-lives">❤️ Lượt: 3</span>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-bar" id="bar-progress"></div>
+    </div>
+
+    <div class="question-box">
+      <div class="prompt">Tìm phép tính có kết quả bằng:</div>
+      <h2 class="target" id="lbl-target">12</h2>
+    </div>
+
+    <div class="hint-box" id="lbl-hint">Bé hãy nhẩm thật kỹ nhé!</div>
+
+    <div class="answers-grid" id="grid-answers"></div>
+  </div>
+
+  <!-- VÙNG KẾT THÚC VÁN BÀI -->
+  <div id="end-section" class="hidden">
+    <h2 id="lbl-end-title" style="font-size: 1.6rem; margin-bottom: 8px;">🎉 XUẤT SẮC! 🎉</h2>
+    <p id="lbl-end-msg" style="font-size: 1.1rem; color: #475569; margin-bottom: 24px;"></p>
+    <div style="display: flex; gap: 12px;">
+      <a href="index.html" class="btn-opt" style="flex: 1; background: #64748b; box-shadow: 0 4px 0 #475569; text-decoration: none; display: flex; align-items: center; justify-content: center;">Trang chủ</a>
+      <button class="btn-opt" style="flex: 1;" onclick="location.reload()">Luyện lại</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // --- THUẬT TOÁN TỰ SINH BÀI TOÁN NGẪU NHIÊN (CỘNG TRỪ TRONG PHẠM VI 20) ---
+  function generateRandomQuestions(total = 20) {
+    const list = [];
+    while (list.length < total) {
+      const isPlus = Math.random() > 0.5; // Ngẫu nhiên phép cộng hoặc trừ
+      let a, b, target, correctStr, hintStr;
+
+      if (isPlus) {
+        // Phép cộng trong phạm vi 20
+        a = Math.floor(Math.random() * 11) + 2; // từ 2 đến 12
+        b = Math.floor(Math.random() * (20 - a)) + 1;
+        target = a + b;
+        correctStr = `${a} + ${b}`;
+        hintStr = `Gợi ý: Lấy ${a} cộng thêm ${b} sẽ ra ${target}.`;
+      } else {
+        // Phép trừ trong phạm vi 20
+        target = Math.floor(Math.random() * 16) + 2; // target từ 2 đến 17
+        b = Math.floor(Math.random() * (20 - target)) + 1;
+        a = target + b; // a <= 20
+        correctStr = `${a} - ${b}`;
+        hintStr = `Gợi ý: Lấy ${a} bớt đi ${b} sẽ còn ${target}.`;
+      }
+
+      // Tạo 3 đáp án sai gây nhiễu hợp lý (cùng dấu phép tính)
+      const wrongs = new Set();
+      while (wrongs.size < 3) {
+        let fakeDiff = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 3) + 1);
+        let fakeTarget = target + fakeDiff;
+        if (fakeTarget > 0 && fakeTarget <= 20 && fakeTarget !== target) {
+          if (isPlus) {
+            let fakeB = Math.max(1, b + fakeDiff);
+            wrongs.add(`${a} + ${fakeB}`);
+          } else {
+            let fakeB = Math.max(1, b - fakeDiff);
+            wrongs.add(`${a} - ${fakeB}`);
+          }
+        } else {
+          wrongs.add(isPlus ? `${a + 1} + ${b}` : `${a - 1} - ${b}`);
+        }
+      }
+
+      list.push({
+        target: target,
+        correct: correctStr,
+        wrongs: Array.from(wrongs).slice(0, 3),
+        hint: hintStr
+      });
+    }
+    return list;
+  }
+
+  // Khởi tạo 20 câu hoàn toàn ngẫu nhiên mỗi lần mở trang
+  const questions = generateRandomQuestions(20);
+  let currentIndex = 0;
+  let score = 0;
+  let lives = 3;
+
+  function updateStatus() {
+    document.getElementById('lbl-score').innerText = `⭐ Điểm: ${score}`;
+    document.getElementById('lbl-lives').innerText = `❤️ Lượt: ${lives}`;
+    const percent = (currentIndex / questions.length) * 100;
+    document.getElementById('bar-progress').style.width = `${percent}%`;
+  }
+
+  function renderQuestion() {
+    if (currentIndex >= questions.length) {
+      endGame(true);
+      return;
+    }
+
+    const q = questions[currentIndex];
+    document.getElementById('lbl-target').innerText = q.target;
+    document.getElementById('lbl-hint').innerText = "Bé hãy nhẩm thật kỹ nhé!";
+
+    const container = document.getElementById('grid-answers');
+    container.innerHTML = "";
+
+    const options = [q.correct, ...q.wrongs].sort(() => Math.random() - 0.5);
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-opt';
+      btn.innerText = opt;
+      btn.onclick = () => checkAnswer(btn, opt === q.correct);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, isCorrect) {
+    const q = questions[currentIndex];
+    if (isCorrect) {
+      btn.classList.add('correct');
+      score += 10;
+      updateStatus();
+      Array.from(document.getElementsByClassName('btn-opt')).forEach(b => b.onclick = null);
+
+      setTimeout(() => {
+        currentIndex++;
+        updateStatus();
+        renderQuestion();
+      }, 500);
+    } else {
+      btn.classList.add('disabled');
+      btn.onclick = null;
+      lives--;
+      updateStatus();
+      document.getElementById('lbl-hint').innerText = "💡 " + q.hint;
+
+      if (lives <= 0) {
+        endGame(false);
+      }
+    }
+  }
+
+  function endGame(isWin) {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('end-section').classList.remove('hidden');
+    const title = document.getElementById('lbl-end-title');
+    const msg = document.getElementById('lbl-end-msg');
+
+    if (isWin) {
+      title.innerText = "🎉 XUẤT SẮC! 🎉";
+      title.style.color = "#10b981";
+      msg.innerText = `Bé đã làm đúng tất cả 20 câu và đạt ${score} điểm!`;
+    } else {
+      title.innerText = "CỐ GẮNG LẦN SAU NHÉ! 💪";
+      title.style.color = "#ef4444";
+      msg.innerText = `Bé đã vượt qua ${currentIndex}/20 câu với ${score} điểm.`;
+    }
+  }
+
+  // Chạy ngay khi mở trang
+  updateStatus();
+  renderQuestion();
+</script>
+</body>
+</html>
